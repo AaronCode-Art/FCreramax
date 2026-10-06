@@ -19,7 +19,8 @@ import type {
   UbigeoDepartment,
 } from '../types/store'
 
-const API_BASE_URL = '/api'
+const BACKEND_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '')
+const API_BASE_URL = `${BACKEND_URL}/api`
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
