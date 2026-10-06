@@ -1,0 +1,35 @@
+.choiceCard {
+  display: flex;
+  min-height: 68px;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #e3e0db;
+  border-radius: 3px;
+  background: #fff;
+  padding: 10px 12px;
+  color: #55564f;
+  text-align: left;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.choiceCardActive {
+  border-color: #a85d43;
+  background: #fcf5f1;
+  color: #a85d43;
+}
+
+.choiceCard strong,
+.choiceCard small {
+  display: block;
+}
+
+.choiceCard strong {
+  color: #252621;
+  font-size: 11px;
+}
+
+.choiceCard small {
+  margin-top: 3px;
+  color: #77776f;
+  font-size: 10px;
+}

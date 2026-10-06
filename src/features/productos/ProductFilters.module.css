@@ -1,0 +1,69 @@
+.filters {
+  display: grid;
+  gap: 18px;
+}
+
+.field {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  color: #706b65;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid #dedbd6;
+  border-radius: 3px;
+  background: #fff;
+  padding: 0 11px;
+  color: #252621;
+  font-size: 13px;
+}
+
+.input:focus {
+  border-color: #a85d43;
+  outline: 2px solid rgb(168 93 67 / 15%);
+}
+
+.priceRange {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.availability {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 9px;
+  color: #57534e;
+  font-size: 12px;
+}
+
+.availability input {
+  width: 16px;
+  height: 16px;
+  accent-color: #a85d43;
+}
+
+.filterActions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.clearButton {
+  min-height: 42px;
+  padding: 0 8px;
+  color: #706b65;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.clearButton:hover {
+  color: #a85d43;
+}

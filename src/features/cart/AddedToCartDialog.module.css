@@ -1,0 +1,84 @@
+.backdrop {
+  position: fixed;
+  z-index: 60;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  background: rgb(20 20 18 / 58%);
+  padding: 16px;
+  backdrop-filter: blur(3px);
+}
+
+.dialog {
+  position: relative;
+  width: min(100%, 440px);
+  border-radius: 6px;
+  background: #fbfaf8;
+  padding: 36px;
+  box-shadow: 0 24px 80px rgb(0 0 0 / 24%);
+  text-align: center;
+}
+
+.close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 999px;
+  color: #57534e;
+}
+
+.close:hover {
+  background: #f0eeeb;
+}
+
+.icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 20px;
+  place-items: center;
+  border-radius: 999px;
+  background: #e8f3eb;
+  color: #287044;
+}
+
+.dialog h2 {
+  margin-top: 8px;
+  color: #252621;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.productName {
+  margin-top: 10px;
+  color: #57534e;
+  font-size: 14px;
+}
+
+.prompt {
+  margin-top: 24px;
+  color: #78716c;
+  font-size: 13px;
+}
+
+.actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.actions button {
+  justify-content: center;
+}
+
+@media (max-width: 480px) {
+  .dialog {
+    padding: 32px 22px 24px;
+  }
+}
