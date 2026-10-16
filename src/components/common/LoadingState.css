@@ -1,0 +1,62 @@
+.store-loading {
+  width: min(100%, 600px);
+  min-height: 132px;
+  margin: 12px auto;
+  padding: 24px 27px;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-content: center;
+  align-items: center;
+  gap: 4px 16px;
+  background: linear-gradient(135deg, #fffdfa, #f4eee6);
+  border: 1px solid #e9dfd3;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgb(67 48 28 / 5%);
+}
+
+.store-loading-mark {
+  width: 46px;
+  height: 46px;
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--clay);
+  border-radius: 50%;
+  box-shadow: 0 0 0 6px rgb(166 108 57 / 10%);
+  font-family: var(--serif);
+  font-size: 22px;
+  animation: store-loading-pulse 1.8s ease-in-out infinite;
+}
+
+.store-loading-copy strong {
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.store-loading-copy p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.store-loading-track {
+  height: 3px;
+  grid-column: 2;
+  margin-top: 8px;
+  overflow: hidden;
+  background: #e7ddd1;
+  border-radius: 99px;
+}
+
+.store-loading-track > span {
+  width: 38%;
+  height: 100%;
+  display: block;
+  background: linear-gradient(90deg, #a66c39, #d0a77c);
+  border-radius: inherit;
+  animation: store-loading-progress 1.5s ease-in-out infinite;
+}

@@ -1,0 +1,139 @@
+.profile-card {
+  padding: 25px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.profile-card {
+  max-width: 720px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 23px;
+}
+
+.profile-card > div {
+  display: grid;
+  gap: 7px;
+}
+
+.profile-card span {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.profile-card strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.profile-card .text-link {
+  grid-column: 1 / -1;
+}
+
+.profile-card {
+  border-color: var(--line);
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgb(48 38 27 / 4%);
+}
+
+@media (max-width: 620px) {
+
+  .profile-card {
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 520px) {
+  .profile-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+.account-page-actions {
+  max-width: 720px;
+  margin: -14px 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.account-page-actions .text-link {
+  font-size: 12px;
+}
+
+.account-edit-form {
+  max-width: 720px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.account-edit-form .account-address-field {
+  grid-column: 1 / -1;
+}
+
+.account-edit-form > .auth-error {
+  grid-column: 1 / -1;
+}
+
+.account-form-actions {
+  grid-column: 1 / -1;
+}
+
+.account-edit-form input[readonly] {
+  color: #777168;
+  background: #f5f1eb;
+}
+
+.account-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 520px) {
+  .account-edit-form {
+    grid-template-columns: 1fr;
+    padding: 19px;
+  }
+}
+
+@media (max-width: 520px) {
+
+  .account-edit-form .account-address-field {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 520px) {
+
+  .account-edit-form > .auth-error {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 520px) {
+
+  .account-form-actions {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 520px) {
+
+  .account-page-actions {
+    align-items: flex-start;
+  }
+}
+
+.profile-card {
+  border-radius: var(--radius-card);
+}
+
+.account-page-actions {
+  flex-wrap: wrap;
+}

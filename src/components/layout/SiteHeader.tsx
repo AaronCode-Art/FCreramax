@@ -1,159 +1,147 @@
-import { useState, type MouseEvent } from 'react'
-import { ChevronDown, ClipboardList, Heart, Menu, Search, ShoppingBag, UserRound, X } from 'lucide-react'
-import type { CustomerSession } from '../../types/store'
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { useStore } from '../../context/StoreContext'
+import { HeartIcon } from '../ui/Icons'
 
-interface SiteHeaderProps {
-  cartCount: number
-  wishlistCount: number
-  customer: CustomerSession | null
-  categories: string[]
-  search: string
-  onSearchChange: (value: string) => void
-  onOpenCart: () => void
-  onOpenWishlist: () => void
-  onOpenOrders: () => void
-  onOpenAccount: () => void
-  onNavigate: (path: string) => void
-  onSelectCategory: (category: string) => void
-}
-
-export function SiteHeader({
-  cartCount,
-  wishlistCount,
-  customer,
-  categories,
-  search,
-  onSearchChange,
-  onOpenCart,
-  onOpenWishlist,
-  onOpenOrders,
-  onOpenAccount,
-  onNavigate,
-  onSelectCategory,
-}: SiteHeaderProps) {
+export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [categoriesOpen, setCategoriesOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [search, setSearch] = useState('')
+  const [accountOpen, setAccountOpen] = useState(false)
+  const headerRef = useRef<HTMLElement>(null)
+  const accountMenuRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
+  const { customer, cart, favorites, openAuth, logout, categories, products } = useStore()
+  const searchSuggestions = useMemo(() => {
+    const term = search.trim().toLocaleLowerCase('es')
+    if (!term) return []
+    return products.filter((product) => (
+      `${product.name} ${product.category} ${product.collection} ${product.description}`.toLocaleLowerCase('es').includes(term)
+    )).slice(0, 5)
+  }, [products, search])
+  const navClass = ({ isActive }: { isActive: boolean }) => `nav-link${isActive ? ' nav-link-active' : ''}`
+  const closeMenu = () => setMenuOpen(false)
+  const closeSearch = () => { setSearchOpen(false); setSearch('') }
 
-  function navigate(event: MouseEvent<HTMLAnchorElement>, path: string) {
+  useEffect(() => {
+    if (!searchOpen) return
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!headerRef.current?.contains(event.target as Node)) closeSearch()
+    }
+    document.addEventListener('pointerdown', closeOnOutsideClick)
+    return () => document.removeEventListener('pointerdown', closeOnOutsideClick)
+  }, [searchOpen])
+
+  useEffect(() => {
+    if (!accountOpen) return
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!accountMenuRef.current?.contains(event.target as Node)) setAccountOpen(false)
+    }
+    document.addEventListener('pointerdown', closeOnOutsideClick)
+    return () => document.removeEventListener('pointerdown', closeOnOutsideClick)
+  }, [accountOpen])
+
+  useEffect(() => {
+    if (!menuOpen && !accountOpen) return
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { setMenuOpen(false); setAccountOpen(false) }
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [menuOpen, accountOpen])
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setMenuOpen(false)
-    setCategoriesOpen(false)
-    onNavigate(path)
+    const term = search.trim()
+    closeSearch()
+    closeMenu()
+    navigate(term ? `/productos?search=${encodeURIComponent(term)}` : '/productos')
   }
 
-  const navigation = (
-    <>
-      <a className="whitespace-nowrap transition hover:text-terracotta" href="/" onClick={(event) => navigate(event, '/')}>Inicio</a>
-      <a className="whitespace-nowrap transition hover:text-terracotta" href="/productos" onClick={(event) => navigate(event, '/productos')}>Productos</a>
-      <div
-        className="group relative"
-        onMouseEnter={() => setCategoriesOpen(true)}
-        onMouseLeave={() => setCategoriesOpen(false)}
-      >
-        <button
-          type="button"
-          className="inline-flex items-center gap-1 whitespace-nowrap transition hover:text-terracotta"
-          aria-expanded={categoriesOpen}
-          onClick={() => setCategoriesOpen((open) => !open)}
-          onKeyDown={(event) => {
-            if (event.key === 'Escape') setCategoriesOpen(false)
-          }}
-        >
-          Categorías <ChevronDown size={14} />
-        </button>
-        {categoriesOpen && (
-          <div className="absolute left-0 top-full z-40 min-w-52 rounded-b-lg border border-stone-100 bg-white py-2 shadow-xl">
-            {categories.slice(1).map((category) => (
-              <button
-                key={category}
-                type="button"
-                className="block w-full px-4 py-2 text-left text-sm text-stone-600 hover:bg-stone-50 hover:text-terracotta"
-                onClick={() => {
-                  setCategoriesOpen(false)
-                  setMenuOpen(false)
-                  onSelectCategory(category)
-                }}
-              >
-                {category}
-              </button>
-            ))}
-            <a className="mt-1 block border-t border-stone-100 px-4 py-2 text-sm font-semibold text-ink hover:text-terracotta" href="/categorias" onClick={(event) => navigate(event, '/categorias')}>
-              Ver todas las categorías
-            </a>
-          </div>
-        )}
-      </div>
-      <a className="whitespace-nowrap transition hover:text-terracotta" href="/contacto" onClick={(event) => navigate(event, '/contacto')}>Contacto</a>
-    </>
-  )
+  function navigateToProduct(slug: string) {
+    closeSearch()
+    closeMenu()
+    navigate(`/producto/${slug}`)
+  }
 
   return (
-    <>
-      <header className="sticky top-0 z-30 border-b border-stone-200/80 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex w-[92%] max-w-none items-center justify-between gap-3 py-3">
-          <a href="/" onClick={(event) => navigate(event, '/')} className="flex shrink-0 items-center gap-2.5" aria-label="Cerámax inicio">
-            <span className="grid size-11 place-items-center rounded-lg bg-ink">
-              <img
-                src="https://res.cloudinary.com/dfmveqhud/image/upload/v1790609343/images_ydj9yb.svg"
-                alt=""
-                className="h-9 w-auto object-contain"
-              />
-            </span>
-            <span className="leading-none">
-              <span className="block text-[19px] font-extrabold tracking-[-0.06em] text-ink">cerámax</span>
-              <span className="mt-1 block text-[8px] font-semibold uppercase tracking-[0.25em] text-stone-500">espacios que inspiran</span>
-            </span>
-          </a>
-
-          <nav className="hidden min-w-0 flex-1 items-center justify-center gap-8 px-6 text-sm font-medium text-stone-600 xl:flex">
-            {navigation}
-          </nav>
-
-          <div className="flex items-center gap-1 sm:gap-3">
-            <label className="hidden h-10 w-56 items-center gap-2 rounded-full bg-stone-100 px-4 lg:flex xl:w-72 2xl:w-80">
-              <Search size={16} className="text-stone-500" />
-              <input
-                value={search}
-                onChange={(event) => onSearchChange(event.target.value)}
-                onFocus={() => onNavigate('/productos')}
-                className="min-w-0 flex-1 bg-transparent text-xs outline-none placeholder:text-stone-400"
-                placeholder="Buscar productos"
-                aria-label="Buscar productos"
-              />
-              {search && <button type="button" onClick={() => onSearchChange('')} aria-label="Limpiar búsqueda"><X size={14} className="text-stone-500" /></button>}
-            </label>
-            <button type="button" onClick={onOpenWishlist} className="relative inline-flex size-10 items-center justify-center rounded-full transition hover:bg-stone-100" aria-label={`Abrir favoritos, ${wishlistCount} productos`}>
-              <Heart size={19} strokeWidth={1.7} />
-              {wishlistCount > 0 && <span className="absolute -right-1 -top-1 grid size-[19px] place-items-center rounded-full border-2 border-white bg-terracotta text-[9px] font-bold text-white">{wishlistCount}</span>}
-            </button>
-            {customer && (
-              <button type="button" onClick={onOpenOrders} className="inline-flex h-10 items-center justify-center gap-2 rounded-full px-2 text-xs font-semibold transition hover:bg-stone-100" aria-label="Ver mis pedidos" title="Mis pedidos">
-                <ClipboardList size={19} strokeWidth={1.7} /><span className="hidden sm:inline">Mis pedidos</span>
-              </button>
-            )}
-            <button type="button" onClick={onOpenAccount} className="inline-flex size-10 items-center justify-center rounded-full transition hover:bg-stone-100" aria-label={customer ? `Ver perfil de ${customer.nombres}` : 'Iniciar sesión'} title={customer ? 'Mi perfil' : 'Iniciar sesión'}>
-              <UserRound size={19} strokeWidth={1.7} />
-            </button>
-            <button type="button" onClick={onOpenCart} className="relative inline-flex size-10 items-center justify-center rounded-full bg-ink text-white transition hover:bg-terracotta" aria-label={`Abrir carrito, ${cartCount} productos`}>
-              <ShoppingBag size={18} strokeWidth={1.8} /><span className="absolute -right-1 -top-1 grid size-[19px] place-items-center rounded-full border-2 border-white bg-terracotta text-[9px] font-bold text-white">{cartCount}</span>
-            </button>
-            <button type="button" onClick={() => setMenuOpen((current) => !current)} className="inline-flex size-10 items-center justify-center rounded-full xl:hidden" aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={menuOpen}>
-              {menuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
+    <header ref={headerRef} className={`site-header site-header-clean${menuOpen ? ' site-header-menu-open' : ''}${searchOpen ? ' site-header-search-open' : ''}`}>
+      <Link className="brand" to="/" aria-label="Cerámax, ir al inicio" onClick={() => { closeMenu(); closeSearch() }}>
+        <img className="brand-logo" src="https://res.cloudinary.com/dfmveqhud/image/upload/v1790608920/favicon_xv5sdn.svg" alt="" aria-hidden="true" />
+        <span className="brand-caption">CERÁMAX</span>
+      </Link>
+      <nav className={`main-nav${menuOpen ? ' main-nav-open' : ''}`} aria-label="Navegación principal">
+        <NavLink className={navClass} to="/" end onClick={() => { closeMenu(); closeSearch() }}>Inicio</NavLink>
+        <NavLink className={navClass} to="/productos" onClick={() => { closeMenu(); closeSearch() }}>Productos</NavLink>
+        <div className="nav-dropdown">
+          <NavLink className={({ isActive }) => `nav-link nav-category-trigger${isActive ? ' nav-link-active' : ''}`} to="/categorias" onClick={() => { closeMenu(); closeSearch() }}>
+            Categorías <span className="chevron-icon" aria-hidden="true" />
+          </NavLink>
+          <div className="category-dropdown-menu">
+            <span className="dropdown-title">Explora por tipo de pieza</span>
+            {categories.map((category) => <Link key={category.slug} to={`/categoria/${category.slug}`} onClick={() => { closeMenu(); closeSearch() }}>{category.name}<span aria-hidden="true">→</span></Link>)}
+            <Link className="dropdown-all" to="/categorias" onClick={() => { closeMenu(); closeSearch() }}>Ver todas las categorías</Link>
           </div>
         </div>
-        {menuOpen && (
-          <nav className="grid gap-3 border-t border-stone-100 px-[4%] py-3 text-sm font-medium text-stone-600 xl:hidden">
-            {navigation}
-          </nav>
+        <NavLink className={navClass} to="/contacto" onClick={() => { closeMenu(); closeSearch() }}>Contacto</NavLink>
+      </nav>
+      <div className="header-actions">
+        <button className="icon-button" type="button" aria-label={searchOpen ? 'Cerrar búsqueda' : 'Buscar productos'} aria-expanded={searchOpen} onClick={() => { setSearchOpen((open) => !open); setMenuOpen(false); setAccountOpen(false) }}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.5 4.5" /></svg>
+        </button>
+        {customer ? (
+          <NavLink className="icon-button header-icon-link header-favorites" to="/favoritos" aria-label="Lista de deseos" title="Lista de deseos" onClick={() => { closeMenu(); closeSearch() }}>
+            <HeartIcon />{favorites.length > 0 && <span className="favorite-count">{favorites.length}</span>}
+          </NavLink>
+        ) : (
+          <button className="icon-button header-icon-link header-favorites" type="button" aria-label="Inicia sesión para ver tus favoritos" title="Lista de deseos" onClick={() => { closeMenu(); closeSearch(); openAuth('login') }}>
+            <HeartIcon />
+          </button>
         )}
-        <div className="border-t border-stone-100 px-4 py-2 lg:hidden">
-          <label className="mx-auto flex h-9 w-[92%] items-center gap-2 rounded-full bg-stone-100 px-3">
-            <Search size={15} className="text-stone-500" />
-            <input value={search} onChange={(event) => onSearchChange(event.target.value)} onFocus={() => onNavigate('/productos')} className="w-full bg-transparent text-xs outline-none" placeholder="Buscar productos" aria-label="Buscar productos" />
-          </label>
+        {customer ? (
+          <NavLink className="icon-button header-icon-link header-cart" to="/carrito" aria-label="Carrito" title="Carrito" onClick={() => { closeMenu(); closeSearch() }}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l1 12H4L5 8Z" /><path d="M9 9V6a3 3 0 0 1 6 0v3" /></svg>
+            {cart.length > 0 && <span className="cart-count">{cart.reduce((sum, item) => sum + item.quantity, 0)}</span>}
+          </NavLink>
+        ) : (
+          <button className="icon-button header-icon-link header-cart" type="button" aria-label="Inicia sesión para ver tu carrito" title="Carrito" onClick={() => { closeMenu(); closeSearch(); openAuth('login') }}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l1 12H4L5 8Z" /><path d="M9 9V6a3 3 0 0 1 6 0v3" /></svg>
+          </button>
+        )}
+        <div ref={accountMenuRef} className={`account-menu${accountOpen ? ' account-menu-open' : ''}`}>
+          <button className="icon-button" type="button" aria-label={customer ? 'Abrir menú de mi cuenta' : 'Iniciar sesión'} aria-expanded={accountOpen} onClick={() => {
+            if (!customer) openAuth('login')
+            else setAccountOpen((open) => !open)
+            setMenuOpen(false)
+            setSearchOpen(false)
+          }}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path d="M5.5 20a6.5 6.5 0 0 1 13 0" /></svg>
+          </button>
+          {customer && accountOpen && <div className="account-dropdown">
+            <span className="account-dropdown-name">{customer.firstNames || customer.name}</span>
+            <Link to="/mi-cuenta" onClick={() => setAccountOpen(false)}>Mi perfil</Link>
+            <Link to="/pedidos" onClick={() => setAccountOpen(false)}>Mis pedidos</Link>
+            <Link to="/favoritos" onClick={() => setAccountOpen(false)}>Lista de deseos</Link>
+            <button type="button" onClick={() => { logout(); setAccountOpen(false) }}>Cerrar sesión</button>
+          </div>}
         </div>
-      </header>
-    </>
+        <button className={`icon-button mobile-menu-toggle${menuOpen ? ' is-open' : ''}`} type="button" aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={menuOpen} onClick={() => { setMenuOpen((open) => !open); setSearchOpen(false); setAccountOpen(false) }}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">{menuOpen ? <path d="m6 6 12 12M18 6 6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}</svg>
+        </button>
+      </div>
+      {searchOpen && <form className="header-search" role="search" onSubmit={submitSearch}>
+        <label className="sr-only" htmlFor="site-search">Buscar productos</label>
+        <svg className="header-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.5 4.5" /></svg>
+        <input id="site-search" type="search" autoFocus autoComplete="off" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="¿Qué pieza estás buscando?" aria-autocomplete="list" aria-controls="header-search-suggestions" aria-expanded={Boolean(search.trim())} />
+        {search && <button className="header-search-clear" type="button" aria-label="Limpiar búsqueda" onClick={() => setSearch('')}>×</button>}
+        <button type="submit">Buscar</button>
+        {search.trim() && <div className="header-search-suggestions" id="header-search-suggestions" role="listbox" aria-label="Productos sugeridos">
+          {searchSuggestions.length ? searchSuggestions.map((product) => <button className="header-search-suggestion" type="button" role="option" aria-selected="false" key={product.id} onClick={() => navigateToProduct(product.slug)}>
+            <img src={product.image} alt="" /><span className="header-search-suggestion-copy"><strong>{product.name}</strong><small>{product.category} · {product.collection}</small></span><strong className="header-search-suggestion-price">S/ {product.price.toFixed(2)}</strong>
+          </button>) : <p className="header-search-no-results">No encontramos productos con “{search.trim()}”.</p>}
+          {searchSuggestions.length > 0 && <button className="header-search-all-results" type="submit">Ver todos los resultados para “{search.trim()}”<span aria-hidden="true">→</span></button>}
+        </div>}
+      </form>}
+    </header>
   )
 }

@@ -1,0 +1,88 @@
+.products-hero {
+  position: relative;
+  min-height: 290px;
+  margin-bottom: 39px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 7px;
+  color: #fff;
+  background: #766456;
+}
+
+.products-hero > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center 52%;
+}
+
+.products-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(31 27 23 / 78%) 0%, rgb(31 27 23 / 47%) 48%, rgb(31 27 23 / 8%) 100%),
+    linear-gradient(0deg, rgb(31 27 23 / 24%), transparent 65%);
+}
+
+.products-hero .page-intro {
+  position: relative;
+  z-index: 1;
+  width: min(710px, 80%);
+  margin: 0;
+  padding: clamp(28px, 5.5vw, 58px);
+}
+
+.products-hero .page-intro .eyebrow {
+  color: rgb(255 255 255 / 88%);
+}
+
+.products-hero .page-intro > p:last-child {
+  color: rgb(255 255 255 / 88%);
+}
+
+.products-hero .page-intro h1 {
+  color: #fff;
+}
+
+@media (max-width: 620px) {
+
+  .products-hero {
+    min-height: 260px;
+    margin-bottom: 27px;
+  }
+}
+
+@media (max-width: 620px) {
+
+  .products-hero > img {
+    object-position: 58% center;
+  }
+}
+
+@media (max-width: 620px) {
+
+  .products-hero-overlay {
+    background:
+      linear-gradient(90deg, rgb(31 27 23 / 78%), rgb(31 27 23 / 35%)),
+      linear-gradient(0deg, rgb(31 27 23 / 22%), transparent 70%);
+  }
+}
+
+@media (max-width: 620px) {
+
+  .products-hero .page-intro {
+    width: 100%;
+    padding: 27px 22px;
+  }
+}
+
+.products-hero {
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 45%);
+  border-radius: var(--radius-card);
+  box-shadow: 0 14px 34px rgb(48 38 27 / 8%);
+}

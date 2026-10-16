@@ -1,0 +1,64 @@
+.wishlist-empty-icon svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.wishlist-demo-note {
+  margin: -17px 0 22px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.wishlist-empty {
+  min-height: 300px;
+  padding: 45px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: #f1ece5;
+}
+
+.wishlist-empty-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #d9cbbd;
+  border-radius: 50%;
+  color: var(--clay);
+}
+
+.wishlist-empty h2 {
+  margin: 17px 0 0;
+  font-family: var(--serif);
+  font-size: 27px;
+  font-weight: 400;
+}
+
+.wishlist-empty p {
+  margin: 8px 0 19px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+@media (max-width: 620px) {
+
+  .wishlist-empty {
+    min-height: 275px;
+  }
+}
+
+@media (max-width: 620px) {
+
+  .wishlist-empty p {
+    max-width: 260px;
+    line-height: 1.6;
+  }
+}

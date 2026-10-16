@@ -1,0 +1,105 @@
+.notice {
+  position: fixed;
+  z-index: 60;
+  left: 50%;
+  top: max(18px, env(safe-area-inset-top));
+  width: max-content;
+  max-width: min(480px, calc(100% - 32px));
+  min-height: 58px;
+  padding: 10px 16px 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 999px;
+  color: #fff;
+  background: #22231f;
+  box-shadow: 0 18px 48px rgb(27 25 20 / 24%);
+  font-size: 13px;
+  line-height: 1.45;
+  transform: translate(-50%, 0);
+  animation: notice-expand 420ms cubic-bezier(.2,.8,.2,1) both;
+  overflow: hidden;
+  transform-origin: center top;
+  transition: opacity 420ms ease, transform 420ms cubic-bezier(.65,0,.35,1);
+}
+
+.notice-indicator {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #20231b;
+  background: #d8c5a2;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.notice-message {
+  min-width: 0;
+  text-align: center;
+}
+
+.notice-closing {
+  animation: none;
+  opacity: 0;
+  transform: translate(-50%, -8px);
+}
+
+.notice button {
+  flex: 0 0 auto;
+  padding: 0 2px;
+  border: 0;
+  color: rgb(255 255 255 / 70%);
+  background: transparent;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+@keyframes notice-expand {
+  from { opacity: 0; transform: translate(-50%, -12px) scale(.86); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notice {
+    animation: none;
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notice-closing {
+    transition: opacity 120ms ease;
+  }
+}
+
+@media (max-width: 620px) {
+
+  .notice {
+    width: max-content;
+    max-width: calc(100% - 24px);
+    min-height: 44px;
+    padding: 6px 10px 6px 8px;
+    gap: 7px;
+    border-radius: 24px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .notice-indicator {
+    flex-basis: 26px;
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+
+  .notice button {
+    min-width: 24px;
+    min-height: 28px;
+    font-size: 18px;
+  }
+}

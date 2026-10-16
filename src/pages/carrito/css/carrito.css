@@ -1,0 +1,7 @@
+.cart-page {
+  min-height: 48vh;
+}
+
+.cart-page .store-empty-state {
+  margin-inline: auto;
+}

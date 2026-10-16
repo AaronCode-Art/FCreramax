@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" fill="none">
+  <rect width="800" height="800" fill="#f7f5f1"/>
+  <path d="M270 510h260l-27-186c-3-24-23-42-47-42h-112c-24 0-44 18-47 42l-27 186Z" stroke="#b8aa97" stroke-width="8"/>
+  <path d="M287 420h226M305 350h190M282 468h236" stroke="#d1c6b7" stroke-width="6"/>
+  <path d="M250 544h300" stroke="#b8aa97" stroke-width="8" stroke-linecap="round"/>
+  <text x="400" y="620" fill="#776d60" font-family="Arial,sans-serif" font-size="24" letter-spacing="3" text-anchor="middle">IMAGEN NO DISPONIBLE</text>
+</svg>

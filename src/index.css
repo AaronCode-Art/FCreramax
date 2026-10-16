@@ -1,0 +1,72 @@
+:root {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+  color: #292722;
+  background: #faf8f4;
+  --serif: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+  scrollbar-color: #b9a997 #faf8f4;
+  scrollbar-width: thin;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid #aa6247;
+  outline-offset: 3px;
+}
+
+::selection {
+  color: #fff;
+  background: #aa6247;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #faf8f4;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid #faf8f4;
+  border-radius: 99px;
+  background: #b9a997;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #927d68;
+}
+
+.storefront input,
+.storefront textarea,
+.storefront select {
+  accent-color: #aa6247;
+  caret-color: #aa6247;
+}

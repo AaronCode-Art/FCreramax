@@ -1,0 +1,242 @@
+.auth-modal > .eyebrow {
+  margin: 0 0 9px;
+}
+
+.auth-modal .customer-form-note {
+  margin: 18px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.auth-modal-heading .eyebrow {
+  margin: 0 0 10px;
+  color: var(--clay);
+}
+
+.auth-modal .customer-error {
+  margin: 0;
+}
+
+.auth-modal .dialog-close {
+  z-index: 3;
+  top: 13px;
+  right: 13px;
+  width: 34px;
+  height: 34px;
+  color: #655e54;
+  background: rgb(250 248 244 / 92%);
+  border: 1px solid rgb(228 217 204 / 85%);
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 1;
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.auth-modal .dialog-close:hover {
+  background: #fff;
+  transform: rotate(90deg);
+}
+
+@keyframes search-pop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes store-loading-pulse {
+  50% { box-shadow: 0 0 0 10px rgb(166 108 57 / 5%); }
+}
+
+@keyframes store-loading-progress {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(290%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *::before {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.heart-filled {
+  fill: currentColor !important;
+}
+
+.thumbnail-button {
+  width: 75px;
+  height: 75px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid transparent;
+  background: #eee8df;
+  cursor: pointer;
+}
+
+.thumbnail-button.thumbnail-active {
+  border-color: var(--clay);
+}
+
+.thumbnail-button:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 2px;
+}
+
+.thumbnail-button img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.related-products-section .section-heading h2 {
+  font-size: clamp(32px, 4vw, 46px);
+}
+
+.quick-view-content > .eyebrow {
+  margin: 0 0 9px;
+  color: var(--clay);
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.quick-view-content > p:not(.product-category, .eyebrow) {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.85;
+}
+
+.quick-view-actions .button {
+  min-height: 46px;
+  flex: 1;
+  border: 0;
+  cursor: pointer;
+}
+
+.quick-view-actions .button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 620px) {
+
+  .thumbnail-button {
+    width: 62px;
+    height: 62px;
+  }
+}
+
+@media (max-width: 620px) {
+
+  .related-products-section .section-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.reviews-section .section-heading {
+  margin-bottom: 25px;
+}
+
+/* Shared polish for consistent spacing, surfaces, and controls across storefront pages. */
+
+.order-timeline-step.is-current {
+  color: var(--ink);
+}
+
+.order-timeline-step.is-current .order-timeline-marker {
+  color: #fff;
+  background: var(--olive);
+  border-color: var(--olive);
+}
+
+.checkout-summary.checkout-order-summary .order-detail-total {
+  padding-top: 7px;
+}
+
+@media (max-width: 520px) {
+
+  .reviews-section .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.auth-modal-main > .eyebrow {
+  margin: 0 0 10px;
+  color: var(--clay);
+}
+
+.auth-modal .customer-form-note {
+  margin: 2px 0 0;
+  padding-top: 13px;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  font-size: 10px;
+}
+
+.auth-modal .customer-form {
+  gap: 17px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.auth-modal .customer-form label {
+  min-width: 0;
+  gap: 8px;
+  color: #514b43;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.auth-modal .customer-form input {
+  min-height: 46px;
+  padding: 11px 13px;
+  border-radius: 7px;
+  font-size: 13px;
+}
+
+.auth-modal .customer-form select {
+  min-height: 46px;
+  padding: 11px 13px;
+  border-radius: 7px;
+  font-size: 13px;
+}
+
+.auth-modal .dialog-close {
+  top: 15px;
+  right: 15px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  background: rgb(250 248 244 / 94%);
+  box-shadow: 0 3px 12px rgb(0 0 0 / 12%);
+}
+
+@media (max-width: 700px) {
+
+  .auth-modal .customer-form {
+    gap: 15px;
+  }
+}
