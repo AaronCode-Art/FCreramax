@@ -6,6 +6,7 @@ import { SiteHeader } from './SiteHeader'
 import { StoreProvider } from '../../context/StoreContext'
 import { AuthModal } from '../common/AuthModal'
 import { StoreNotice } from '../common/StoreNotice'
+import { SplashLoader } from '../motion/SplashLoader'
 
 export function StoreLayout() {
   const { pathname } = useLocation()
@@ -17,6 +18,7 @@ export function StoreLayout() {
   return (
     <StoreProvider>
       <div className="storefront">
+        <SplashLoader />
         <SiteHeader />
         <main><Outlet /></main>
         <SiteFooter />

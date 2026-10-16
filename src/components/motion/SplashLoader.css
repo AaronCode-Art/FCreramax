@@ -1,0 +1,96 @@
+.splash {
+  position: fixed;
+  z-index: 200;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #fbeedd;
+  background: #1b1310;
+  clip-path: circle(150% at 50% 50%);
+  transition: clip-path 800ms cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.splash-leave {
+  clip-path: circle(0% at 50% 42%);
+  pointer-events: none;
+}
+
+.splash-glow {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(40% 36% at 50% 46%, rgb(214 90 45 / 34%), transparent 70%),
+    radial-gradient(30% 28% at 78% 82%, rgb(31 111 107 / 28%), transparent 70%);
+  animation: splash-breathe 3.6s ease-in-out infinite alternate;
+}
+
+.splash-content {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.splash-word {
+  margin: 8px 0 0;
+  display: flex;
+  gap: 0.18em;
+  font-family: var(--serif);
+  font-size: clamp(30px, 6vw, 46px);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.splash-word span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.5em);
+  animation: splash-letter 700ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 300ms;
+}
+
+.splash-tag {
+  margin: 0;
+  color: #d9b896;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+
+.splash-track {
+  width: 180px;
+  height: 3px;
+  margin-top: 14px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 14%);
+  border-radius: 99px;
+}
+
+.splash-track > span {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: linear-gradient(90deg, #d65a2d, #f4b27a);
+  transform-origin: left;
+  animation: splash-fill 1.7s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+@keyframes splash-letter {
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes splash-fill {
+  from { transform: scaleX(0.04); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes splash-breathe {
+  from { opacity: 0.7; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash, .splash-leave { transition-duration: 1ms; }
+  .splash-glow, .splash-word span, .splash-track > span { animation: none; opacity: 1; transform: none; }
+}

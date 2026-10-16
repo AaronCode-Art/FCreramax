@@ -1,0 +1,102 @@
+.vase3d {
+  position: relative;
+  display: block;
+  flex: none;
+}
+
+.vase3d-scale {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200px;
+  height: 220px;
+  display: block;
+  perspective: 900px;
+  transform-origin: 0 0;
+}
+
+.vase3d-stage {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform-style: preserve-3d;
+  transform: translateY(46px) rotateX(63deg);
+  animation: vase-tilt 4.8s cubic-bezier(0.45, 0, 0.25, 1) infinite alternate;
+}
+
+.vase3d-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  width: 112px;
+  height: 22px;
+  margin-left: -56px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 38%), transparent);
+  filter: blur(3px);
+  animation: vase-shadow 4.8s cubic-bezier(0.45, 0, 0.25, 1) infinite alternate;
+}
+
+.vase-ring {
+  --c1: #c9522b;
+  --c2: #f3d9b6;
+  --c3: #7a2a14;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--r) * 2px);
+  height: calc(var(--r) * 2px);
+  margin: calc(var(--r) * -1px) 0 0 calc(var(--r) * -1px);
+  display: block;
+  transform: translateZ(calc(var(--y) * 1px));
+}
+
+.vase-ring[data-band='glaze'] { --c1: #1f6f6b; --c2: #9ad3c8; --c3: #0d3f3e; }
+.vase-ring[data-band='foot'] { --c1: #7a2a14; --c2: #c9522b; --c3: #3a1209; }
+.vase-ring[data-band='lip'] { --c1: #f3d9b6; --c2: #c9522b; --c3: #e8b98a; }
+
+.vase-ring > i {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: 50%;
+  background: conic-gradient(
+    from calc(var(--i) * 19deg),
+    var(--c1) 0 26%,
+    var(--c2) 26% 33%,
+    var(--c1) 33% 61%,
+    var(--c3) 61% 74%,
+    var(--c1) 74% 90%,
+    var(--c2) 90% 94%,
+    var(--c1) 94%
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+  animation: vase-spin var(--d) linear infinite;
+}
+
+.vase-ring:nth-child(even) > i {
+  animation-direction: reverse;
+}
+
+@keyframes vase-spin {
+  to { rotate: 360deg; }
+}
+
+@keyframes vase-tilt {
+  from { transform: translateY(46px) rotateX(52deg); }
+  to { transform: translateY(40px) rotateX(70deg); }
+}
+
+@keyframes vase-shadow {
+  from { opacity: 0.55; transform: scaleX(0.9); }
+  to { opacity: 1; transform: scaleX(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vase3d-stage,
+  .vase3d-shadow,
+  .vase-ring > i {
+    animation: none !important;
+  }
+}

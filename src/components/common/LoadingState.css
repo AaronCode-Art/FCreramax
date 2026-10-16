@@ -1,62 +1,62 @@
 .store-loading {
-  width: min(100%, 600px);
-  min-height: 132px;
-  margin: 12px auto;
-  padding: 24px 27px;
+  width: min(100%, 620px);
+  min-height: 168px;
+  margin: 18px auto;
+  padding: 22px 32px 22px 22px;
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
-  align-content: center;
+  grid-template-columns: 104px minmax(0, 1fr);
   align-items: center;
-  gap: 4px 16px;
-  background: linear-gradient(135deg, #fffdfa, #f4eee6);
-  border: 1px solid #e9dfd3;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgb(67 48 28 / 5%);
+  gap: 22px;
+  background: #fff;
+  border: 1px solid #ecdfd0;
+  border-radius: 18px;
+  box-shadow: 0 18px 48px rgb(58 30 14 / 9%);
 }
 
-.store-loading-mark {
-  width: 46px;
-  height: 46px;
-  grid-row: span 2;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  background: var(--clay);
-  border-radius: 50%;
-  box-shadow: 0 0 0 6px rgb(166 108 57 / 10%);
-  font-family: var(--serif);
-  font-size: 22px;
-  animation: store-loading-pulse 1.8s ease-in-out infinite;
+.store-loading-vase {
+  height: 114px;
 }
 
 .store-loading-copy strong {
-  color: var(--ink);
+  display: block;
+  color: #1f1813;
   font-family: var(--serif);
-  font-size: 20px;
-  font-weight: 400;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .store-loading-copy p {
   margin: 4px 0 0;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.6;
+  color: #7a6c60;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .store-loading-track {
-  height: 3px;
-  grid-column: 2;
-  margin-top: 8px;
+  height: 4px;
+  margin-top: 16px;
+  display: block;
   overflow: hidden;
-  background: #e7ddd1;
+  background: #f1e5d7;
   border-radius: 99px;
 }
 
 .store-loading-track > span {
-  width: 38%;
+  width: 36%;
   height: 100%;
   display: block;
-  background: linear-gradient(90deg, #a66c39, #d0a77c);
+  background: linear-gradient(90deg, #c9522b, #f0a36b);
   border-radius: inherit;
-  animation: store-loading-progress 1.5s ease-in-out infinite;
+  animation: store-loading-progress 1.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes store-loading-progress {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(300%); }
+}
+
+@media (max-width: 480px) {
+  .store-loading { grid-template-columns: 84px minmax(0, 1fr); padding: 18px; gap: 14px; }
+  .store-loading-vase { transform: scale(0.8); transform-origin: left center; }
 }

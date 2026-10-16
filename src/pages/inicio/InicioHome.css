@@ -1,0 +1,411 @@
+/* Inicio: hero, beneficios, categorías 3D y ofertas */
+.cx-hero {
+  position: relative;
+  overflow: hidden;
+  background: #f6ecdf;
+}
+
+.cx-hero-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(48% 70% at 82% 40%, rgb(226 66 26 / 16%), transparent 70%),
+    radial-gradient(34% 50% at 8% 90%, rgb(31 111 107 / 12%), transparent 70%);
+  pointer-events: none;
+}
+
+.cx-hero-inner {
+  position: relative;
+  min-height: min(680px, calc(100svh - 120px));
+  padding-block: 56px 64px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  align-items: center;
+  gap: 48px;
+}
+
+.cx-hero-copy h1 {
+  margin: 0;
+  color: #1f1813;
+  font-family: var(--serif);
+  font-size: clamp(42px, 6.2vw, 88px);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+  animation: cx-rise 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.cx-mark {
+  position: relative;
+  display: inline-block;
+  color: #d4401a;
+}
+
+.cx-mark svg {
+  position: absolute;
+  right: 0;
+  bottom: -0.12em;
+  left: 0;
+  width: 100%;
+  height: 0.18em;
+  overflow: visible;
+}
+
+.cx-mark path {
+  fill: none;
+  stroke: #1f6f6b;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 320;
+  stroke-dashoffset: 320;
+  animation: cx-draw 1100ms 700ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.cx-hero-text {
+  max-width: 50ch;
+  margin: 26px 0 0;
+  color: #5d4d41;
+  font-size: clamp(16px, 1.4vw, 19px);
+  line-height: 1.6;
+  animation: cx-rise 900ms 120ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.cx-hero-actions {
+  margin-top: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  animation: cx-rise 900ms 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.cx-btn {
+  min-height: 54px;
+  padding: 0 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 99px;
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1), background 180ms, box-shadow 260ms, color 180ms;
+}
+
+.cx-btn:hover { transform: translateY(-3px); }
+.cx-btn:active { transform: scale(0.97); }
+.cx-btn-ember { color: #fff; background: #e2421a; box-shadow: 0 16px 30px -12px rgb(226 66 26 / 80%); }
+.cx-btn-ember:hover { background: #c93414; box-shadow: 0 22px 36px -12px rgb(226 66 26 / 90%); }
+.cx-btn-ember span { transition: transform 260ms; }
+.cx-btn-ember:hover span { transform: translateX(4px); }
+.cx-btn-ghost { color: #1f1813; background: rgb(255 255 255 / 60%); border: 1.5px solid #1f1813; }
+.cx-btn-ghost:hover { color: #fff; background: #1f1813; }
+
+.cx-hero-visual {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 520px);
+  animation: cx-rise 1000ms 150ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.cx-arch {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #cbb69f;
+  border-radius: 999px 999px 28px 28px;
+  box-shadow: 0 50px 70px -36px rgb(58 30 14 / 60%), 0 0 0 10px rgb(255 255 255 / 55%);
+}
+
+.cx-arch img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  animation: cx-zoom 14s ease-in-out infinite alternate;
+}
+
+.cx-seal {
+  position: absolute;
+  top: 6%;
+  left: -9%;
+  width: 124px;
+  height: 124px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  text-decoration: none;
+  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.cx-seal:hover { transform: scale(1.08) rotate(-6deg); }
+
+.cx-seal::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #e2421a;
+  border-radius: 50%;
+  box-shadow: 0 18px 30px -12px rgb(226 66 26 / 75%);
+}
+
+.cx-seal-ring {
+  position: absolute;
+  inset: 0;
+  animation: cx-spin 18s linear infinite;
+}
+
+.cx-seal-ring text {
+  fill: #ffe9d8;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.cx-seal-core {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  line-height: 1;
+}
+
+.cx-seal-core small { font-size: 11px; font-weight: 700; }
+.cx-seal-core b { font-family: var(--serif); font-size: 31px; font-weight: 800; letter-spacing: -0.04em; }
+
+.cx-float-card {
+  position: absolute;
+  right: -7%;
+  bottom: 7%;
+  width: min(290px, 70%);
+  padding: 10px 14px 10px 10px;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  color: #1f1813;
+  background: rgb(255 253 249 / 96%);
+  border-radius: 16px;
+  box-shadow: 0 30px 44px -22px rgb(58 30 14 / 55%);
+  text-decoration: none;
+  animation: cx-bob 5s ease-in-out infinite alternate;
+}
+
+.cx-float-card > img { width: 64px; height: 64px; border-radius: 11px; object-fit: cover; }
+.cx-float-copy { min-width: 0; display: grid; gap: 1px; }
+.cx-float-copy small { color: #b6471f; font-size: 11px; font-weight: 800; }
+.cx-float-copy strong { overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.cx-float-copy span b { color: #d4401a; font-family: var(--serif); font-size: 17px; font-weight: 800; }
+.cx-float-copy del { color: #a39383; font-size: 12px; }
+
+.cx-float-off {
+  position: absolute;
+  top: -12px;
+  right: 12px;
+  padding: 4px 9px;
+  color: #fff;
+  background: #e2421a;
+  border-radius: 8px;
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/* Beneficios */
+.cx-benefits {
+  position: relative;
+  margin-top: -34px;
+  padding: 18px 12px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: #fff;
+  border: 1px solid #ecdfd0;
+  border-radius: 20px;
+  box-shadow: 0 24px 40px -28px rgb(58 30 14 / 45%);
+}
+
+.cx-benefit {
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cx-benefit + .cx-benefit { border-left: 1px solid #f0e4d6; }
+
+.cx-benefit svg {
+  width: 42px;
+  height: 42px;
+  padding: 9px;
+  flex: none;
+  fill: none;
+  stroke: #d4401a;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  background: #fff1e8;
+  border-radius: 12px;
+}
+
+.cx-benefit span { display: grid; gap: 1px; }
+.cx-benefit strong { color: #1f1813; font-size: 14px; }
+.cx-benefit small { color: #7a6c60; font-size: 12.5px; line-height: 1.35; }
+
+/* Secciones */
+.cx-section { padding-block: 76px 12px; }
+
+.cx-head {
+  margin-bottom: 30px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.cx-head h2,
+.cx-deals h2 {
+  margin: 0;
+  color: #1f1813;
+  font-family: var(--serif);
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.cx-link {
+  padding-bottom: 3px;
+  color: #1f1813;
+  border-bottom: 2px solid #e2421a;
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.cx-link span { display: inline-block; transition: transform 240ms; }
+.cx-link:hover span { transform: translateX(4px); }
+.cx-link-light { color: #fff; border-color: #ff7a4d; }
+
+.cx-cats { overflow: hidden; }
+.cx-cats-stage { padding-inline: 16px; }
+
+/* Ofertas */
+.cx-deals {
+  position: relative;
+  margin-top: 84px;
+  padding-block: 64px 70px;
+  overflow: hidden;
+  color: #fff;
+  background: #1b1310;
+}
+
+.cx-deals-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(40% 90% at 0% 0%, rgb(226 66 26 / 46%), transparent 70%),
+    radial-gradient(40% 80% at 100% 100%, rgb(31 111 107 / 34%), transparent 70%);
+  pointer-events: none;
+}
+
+.cx-deals-head {
+  position: relative;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 22px;
+}
+
+.cx-deals-title { display: flex; align-items: center; gap: 24px; }
+
+.cx-deals-big {
+  padding: 4px 22px 8px;
+  color: #fff;
+  background: linear-gradient(160deg, #ff5a2a, #c4300e);
+  border-radius: 18px 18px 18px 4px;
+  box-shadow: 0 22px 38px -16px rgb(226 66 26 / 80%);
+  font-family: var(--serif);
+  font-size: clamp(44px, 6vw, 84px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+  transform: rotate(-3deg);
+  font-variant-numeric: tabular-nums;
+}
+
+.cx-deals h2 { color: #fff; }
+.cx-deals-title p { margin: 8px 0 0; color: #e7cfb9; font-size: 15px; }
+
+.cx-deals-tools { display: flex; align-items: center; gap: 12px; }
+
+.cx-round {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: rgb(255 255 255 / 10%);
+  border: 1px solid rgb(255 255 255 / 24%);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1), background 160ms, color 160ms;
+}
+
+.cx-round:hover { color: #1b1310; background: #fff; transform: scale(1.08); }
+.cx-round svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.cx-rail {
+  position: relative;
+  padding-block: 14px 26px;
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.cx-rail::-webkit-scrollbar { display: none; }
+.cx-rail-item { width: 270px; flex: none; display: flex; scroll-snap-align: start; }
+.cx-rail-item > .pc { width: 100%; }
+
+.cx-shelf { padding-bottom: 20px; }
+
+@keyframes cx-rise {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes cx-draw { to { stroke-dashoffset: 0; } }
+@keyframes cx-zoom { to { transform: scale(1.09); } }
+@keyframes cx-spin { to { transform: rotate(360deg); } }
+@keyframes cx-bob { to { transform: translateY(-10px); } }
+
+@media (max-width: 960px) {
+  .cx-hero-inner { grid-template-columns: 1fr; padding-block: 36px 56px; gap: 38px; }
+  .cx-hero-visual { width: min(86%, 440px); }
+  .cx-seal { left: -6%; width: 104px; height: 104px; }
+  .cx-benefits { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 0; }
+  .cx-benefit:nth-child(3) { border-left: 0; }
+}
+
+@media (max-width: 600px) {
+  .cx-hero-inner { min-height: 0; }
+  .cx-btn { min-height: 50px; padding: 0 22px; font-size: 14px; }
+  .cx-float-card { right: -4%; width: 78%; }
+  .cx-benefits { margin-top: -20px; padding: 10px 6px; }
+  .cx-benefit { padding: 10px; gap: 10px; }
+  .cx-benefit svg { width: 36px; height: 36px; padding: 7px; }
+  .cx-benefit small { display: none; }
+  .cx-section { padding-top: 56px; }
+  .cx-deals { margin-top: 60px; padding-block: 48px 52px; }
+  .cx-deals-title { gap: 14px; }
+  .cx-deals-tools .cx-link { display: none; }
+  .cx-rail-item { width: 232px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cx-hero-copy h1, .cx-hero-text, .cx-hero-actions, .cx-hero-visual, .cx-arch img, .cx-seal-ring, .cx-float-card { animation: none; }
+  .cx-mark path { animation: none; stroke-dashoffset: 0; }
+}
