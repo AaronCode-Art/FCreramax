@@ -4,6 +4,7 @@ import CarritoPage from './pages/carrito/CarritoPage'
 import CategoriasPage from './pages/categorias/CategoriasPage'
 import CheckoutPage from './pages/checkout/CheckoutPage'
 import ContactoPage from './pages/contacto/ContactoPage'
+import CuponesPage from './pages/cupones/CuponesPage'
 import DetalleProductoPage from './pages/detalleproducto/DetalleProductoPage'
 import FavoritosPage from './pages/favoritos/FavoritosPage'
 import InicioPage from './pages/inicio/InicioPage'
@@ -29,6 +30,7 @@ export default function App() {
           <Route path="favoritos" element={<FavoritosPage />} />
           <Route path="checkout" element={<CheckoutPage />} />
           <Route path="contacto" element={<ContactoPage />} />
+          <Route path="cupones" element={<CuponesPage />} />
           <Route path="404" element={<NoEncontradoPage />} />
           <Route path="*" element={<Navigate to="/404" replace />} />
         </Route>

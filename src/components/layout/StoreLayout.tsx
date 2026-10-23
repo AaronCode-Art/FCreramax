@@ -6,6 +6,7 @@ import { SiteHeader } from './SiteHeader'
 import { StoreProvider } from '../../context/StoreContext'
 import { AuthModal } from '../common/AuthModal'
 import { StoreNotice } from '../common/StoreNotice'
+import { CouponAnnouncer } from '../common/CouponAnnouncer'
 import { SplashLoader } from '../motion/SplashLoader'
 
 export function StoreLayout() {
@@ -24,6 +25,7 @@ export function StoreLayout() {
         <SiteFooter />
         <AuthModal />
         <StoreNotice />
+        <CouponAnnouncer />
       </div>
     </StoreProvider>
   )

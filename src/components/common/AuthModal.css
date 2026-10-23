@@ -65,6 +65,19 @@
   gap: 15px;
 }
 
+.auth-recovery-back {
+  align-self: flex-start;
+  padding: 0;
+  color: var(--clay);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 @keyframes auth-modal-enter {
   from { opacity: 0; transform: translateY(8px) scale(0.99); }
   to { opacity: 1; transform: translateY(0) scale(1); }
@@ -1029,5 +1042,200 @@
 
   .auth-modal .register-fields {
     gap: 11px;
+  }
+}
+
+.auth-modal-recovery .auth-modal-main {
+  justify-content: center;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+
+.auth-modal-recovery .auth-modal-description {
+  margin-bottom: 24px;
+}
+
+.recovery-progress {
+  display: grid;
+  grid-template-columns: 46px 1fr;
+  align-items: center;
+  column-gap: 13px;
+  row-gap: 4px;
+  margin-bottom: 5px;
+  padding: 16px;
+  background: #f5f2ec;
+  border: 1px solid #e9e2d8;
+  border-radius: 7px;
+}
+
+.recovery-progress-icon {
+  width: 44px;
+  height: 44px;
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  color: #315a49;
+  background: #e6eee8;
+  border-radius: 50%;
+}
+
+.recovery-progress-icon svg {
+  width: 21px;
+  height: 21px;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.recovery-step {
+  color: #827b70;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.recovery-progress > strong {
+  color: #282b27;
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.recovery-progress-track {
+  height: 3px;
+  grid-column: 1 / -1;
+  margin-top: 9px;
+  overflow: hidden;
+  background: #e1d9ce;
+  border-radius: 99px;
+}
+
+.recovery-progress-track i {
+  width: 50%;
+  height: 100%;
+  display: block;
+  background: #315a49;
+  border-radius: inherit;
+  transition: width 180ms ease;
+}
+
+.recovery-progress-track i.is-complete {
+  width: 100%;
+}
+
+.auth-modal .auth-form input:disabled {
+  color: #746f66;
+  background: #f4f1ec;
+  cursor: not-allowed;
+}
+
+.auth-modal .auth-form .recovery-code-input {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.45em;
+  font-variant-numeric: tabular-nums;
+}
+
+.auth-modal .auth-form > label > small {
+  color: #777168;
+  font-size: 10px;
+  font-weight: 450;
+}
+
+.recovery-password-rules {
+  display: grid;
+  gap: 7px;
+  margin: -7px 0 0;
+  padding: 12px 14px 12px 31px;
+  color: #777168;
+  background: #f7f5f1;
+  border: 1px solid #ebe5dc;
+  border-radius: 5px;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.auth-modal .auth-form > .recovery-password-rules {
+  grid-column: 1 / -1;
+}
+
+.recovery-password-rules li::marker {
+  color: #aa6247;
+}
+
+.recovery-password-rules li.is-met {
+  color: #315a49;
+}
+
+.recovery-password-rules li.is-met::marker {
+  color: #315a49;
+}
+
+.recovery-delivery-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 13px;
+  color: #395c4b;
+  background: #eef4ef;
+  border: 1px solid #d7e4d9;
+  border-radius: 5px;
+}
+
+.recovery-delivery-note > span {
+  flex: 0 0 auto;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.recovery-delivery-note p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.auth-modal .auth-form .auth-success {
+  margin: 0;
+  padding: 11px 13px;
+  color: #315a49;
+  background: #eef4ef;
+  border: 1px solid #d7e4d9;
+  border-radius: 5px;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.recovery-secondary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.auth-modal .auth-recovery-back {
+  min-height: 32px;
+  color: #686156;
+  font-size: 11px;
+}
+
+.auth-modal .auth-recovery-back:hover {
+  color: #315a49;
+}
+
+.auth-modal .auth-recovery-back:focus-visible {
+  outline: 2px solid #315a49;
+  outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+  .auth-modal-recovery .auth-modal-main {
+    justify-content: flex-start;
+  }
+
+  .recovery-progress {
+    padding: 13px;
   }
 }

@@ -118,6 +118,6 @@ export default function DetalleProductoPage() {
         <div className="review-login-note"><span>¿Ya tienes una experiencia con esta pieza?</span><button type="button" onClick={() => openAuth('login')}>Inicia sesión para dejar tu reseña</button></div>
       )}
     </section>
-    <section className="related-products-section"><div className="page-shell"><div className="section-heading"><div><p className="eyebrow">Continúa explorando</p><h2>También podría interesarte</h2></div><Link className="text-link" to="/productos">Ver catálogo →</Link></div><ProductGrid products={relatedProducts} /></div></section>
+    {relatedProducts.length > 0 && <section className="related-products-section"><div className="page-shell"><div className="section-heading"><div><p className="eyebrow">Continúa explorando</p><h2>Productos que te pueden interesar</h2></div><Link className="text-link" to="/productos">Ver catálogo →</Link></div><ProductGrid products={relatedProducts} /></div></section>}
   </>
 }

@@ -21,16 +21,72 @@ export function useCheckoutPage() {
   const [savingAccount, setSavingAccount] = useState(false)
   const [businessName, setBusinessName] = useState('')
   const [businessRuc, setBusinessRuc] = useState('')
+  const [testPhone, setTestPhone] = useState('')
+  const [testCode, setTestCode] = useState('')
   const [cardName, setCardName] = useState('')
   const [cardNumber, setCardNumber] = useState('')
-  const [expiry, setExpiry] = useState('')
-  const [cvv, setCvv] = useState('')
+  const [cardExpiry, setCardExpiry] = useState('')
+  const [cardSecurityCode, setCardSecurityCode] = useState('')
+  const [approvedPaymentFingerprint, setApprovedPaymentFingerprint] = useState('')
+  const [paymentNotice, setPaymentNotice] = useState('')
   const [error, setError] = useState('')
   const [quote, setQuote] = useState<CheckoutQuote | null>(null)
   const [quoteError, setQuoteError] = useState('')
+  const [couponNotice, setCouponNotice] = useState('')
+  const [couponInput, setCouponInput] = useState('')
+  const [couponCode, setCouponCode] = useState('')
   const [quoteLoading, setQuoteLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const cartSubtotal = cart.reduce((sum, line) => sum + line.product.price * line.quantity, 0)
+  const paymentFingerprint = `${payment}:${(quote?.total ?? cartSubtotal).toFixed(2)}`
+  const paymentApproved = approvedPaymentFingerprint === paymentFingerprint
+
+  function selectPayment(method: 'YAPE' | 'PLIN' | 'TARJETA') {
+    setPayment(method)
+    setApprovedPaymentFingerprint('')
+    setPaymentNotice('')
+    setError('')
+  }
+
+  function updateTestPhone(value: string) {
+    setTestPhone(value.replace(/\D/g, '').slice(0, 9))
+    setApprovedPaymentFingerprint('')
+    setPaymentNotice('')
+  }
+
+  function updateTestCode(value: string) {
+    setTestCode(value.replace(/\D/g, '').slice(0, 9))
+    setApprovedPaymentFingerprint('')
+    setPaymentNotice('')
+  }
+
+  function updateCardDetails(update: () => void) {
+    update()
+    setApprovedPaymentFingerprint('')
+    setPaymentNotice('')
+  }
+
+  function validateTestPayment() {
+    const validMobilePayment = payment === 'TARJETA'
+      || (/^[0-9]{1,9}$/.test(testPhone) && /^[0-9]{1,9}$/.test(testCode))
+    const validCardPayment = payment !== 'TARJETA' || (
+      cardName.trim().length > 0
+      && /^[0-9]{13,19}$/.test(cardNumber)
+      && cardExpiry.trim().length > 0
+      && /^[0-9]{3,4}$/.test(cardSecurityCode)
+    )
+    if (!validMobilePayment || !validCardPayment) {
+      setApprovedPaymentFingerprint('')
+      setPaymentNotice('')
+      setError(payment === 'TARJETA'
+        ? 'Completa los datos de tarjeta correctamente.'
+        : 'Ingresa un celular y un código numéricos de hasta 9 dígitos.')
+      return
+    }
+    setError('')
+    setApprovedPaymentFingerprint(paymentFingerprint)
+    setPaymentNotice(`Validación completada para ${payment === 'TARJETA' ? 'tarjeta' : payment}`)
+  }
 
   useEffect(() => {
     if (!customer || !cart.length) {
@@ -49,18 +105,26 @@ export function useCheckoutPage() {
     setQuote(null)
     setQuoteError('')
     setQuoteLoading(true)
-    void quoteCustomerCheckout(delivery, token).then((result) => {
+    void quoteCustomerCheckout(delivery, couponCode || null, token).then((result) => {
       if (active) setQuote(result)
     }).catch((cause: unknown) => {
       if (active) {
         console.error('No se pudo cotizar el checkout en el servidor.', cause)
+        if (couponCode && cause instanceof Error
+          && cause.message.startsWith('El cupón requiere una compra mínima de S/ ')) {
+          setQuote(null)
+          setCouponInput('')
+          setCouponCode('')
+          setCouponNotice(`${cause.message}. Se quitó el cupón; puedes continuar con el precio normal.`)
+          return
+        }
         setQuoteError(cause instanceof Error ? cause.message : 'No se pudo calcular el total del pedido.')
       }
     }).finally(() => {
       if (active) setQuoteLoading(false)
     })
     return () => { active = false }
-  }, [customer, cart, delivery])
+  }, [customer, cart, couponCode, delivery])
 
   useEffect(() => {
     if (!customer) return
@@ -134,8 +198,8 @@ export function useCheckoutPage() {
       setError('Ingresa la razón social y un RUC de 11 dígitos para la factura.')
       return
     }
-    if (payment === 'TARJETA' && (!cardName.trim() || cardNumber.replace(/\D/g, '').length < 13 || !expiry.trim() || cvv.length < 3)) {
-      setError('Completa los datos de tarjeta para continuar. No se almacenarán.')
+    if (approvedPaymentFingerprint !== paymentFingerprint) {
+      setError('Valida los datos del método seleccionado antes de crear el pedido.')
       return
     }
     const request: CustomerCheckoutRequest = {
@@ -154,6 +218,7 @@ export function useCheckoutPage() {
       metodoPago: 'SIMULADO',
       medioPagoSimulado: payment,
       detalles: cart.map(({ product, quantity }) => ({ productoId: product.id, cantidad: quantity })),
+      codigoCupon: couponCode || null,
     }
     setSubmitting(true)
     setError('')
@@ -168,13 +233,47 @@ export function useCheckoutPage() {
     }
   }
 
+  function applyCoupon() {
+    const code = couponInput.trim().toUpperCase()
+    if (!/^[A-Z0-9_-]{3,30}$/.test(code)) {
+      setQuoteError('Ingresa un código de cupón válido (3 a 30 letras o números).')
+      setQuote(null)
+      return
+    }
+    setCouponNotice('')
+    setQuoteError('')
+    setQuote(null)
+    setCouponCode(code)
+  }
+
+  function removeCoupon() {
+    setCouponInput('')
+    setCouponCode('')
+    setCouponNotice('')
+    setQuoteError('')
+    setQuote(null)
+  }
+
+  function updateCouponInput(value: string) {
+    setCouponInput(value)
+    setCouponNotice('')
+  }
+
   return {
-    address, addressConfirmed, businessName, businessRuc, cardName, cardNumber, cart, cartSubtotal,
-    confirmDeliveryAddress, confirmDeliveryDetails, completeOrder, customer, cvv, delivery, department,
-    district, error, expiry, openAuth, payment, phone, province, quote, quoteError, quoteLoading,
+    address, addressConfirmed, businessName, businessRuc, cart, cartSubtotal,
+    confirmDeliveryAddress, confirmDeliveryDetails, completeOrder, customer, delivery, department,
+    district, error, openAuth, payment, paymentApproved,
+    paymentNotice: paymentApproved ? paymentNotice : '', phone, province, quote, quoteError, couponNotice, quoteLoading,
     receipt, reference, saveAccountData, savingAccount, setAddress, setAddressConfirmed, setBusinessName,
-    setBusinessRuc, setCardName, setCardNumber, setCvv, setDelivery, setDepartment, setDistrict,
-    setError, setExpiry, setPayment, setPhone, setProvince, setReceipt, setReference, setSaveAccountData,
-    setShowAddressDialog, showAddressDialog, submitting,
+    setBusinessRuc, setCouponInput: updateCouponInput, setDelivery, setDepartment, setDistrict,
+    setError, setPhone, setProvince, setReceipt, setReference, setSaveAccountData,
+    setShowAddressDialog, showAddressDialog, submitting, couponInput, couponCode, applyCoupon, removeCoupon,
+    testPhone, testCode, updateTestPhone, updateTestCode,
+    cardName, cardNumber, cardExpiry, cardSecurityCode,
+    setCardName: (value: string) => updateCardDetails(() => setCardName(value)),
+    setCardNumber: (value: string) => updateCardDetails(() => setCardNumber(value.replace(/\D/g, '').slice(0, 19))),
+    setCardExpiry: (value: string) => updateCardDetails(() => setCardExpiry(value.replace(/[^\d/]/g, '').slice(0, 5))),
+    setCardSecurityCode: (value: string) => updateCardDetails(() => setCardSecurityCode(value.replace(/\D/g, '').slice(0, 4))),
+    selectPayment, validateTestPayment,
   }
 }

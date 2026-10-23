@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import fallbackProductImage from '../assets/product-image-unavailable.svg'
+import { getRandomCategoryImage } from './categoryImages'
 import { fetchPublicCatalog, fetchPublicProductGallery, PRODUCT_GALLERY_REFRESH_INTERVAL, STORE_DATA_REFRESH_INTERVAL, type PublicProductGalleryImage, type PublicProductSpecification } from '../services/catalogApi'
 import { API_UNAUTHORIZED_EVENT, ApiError } from '../services/api'
 import { fetchCustomerProfile, updateCustomerDeliveryProfile } from '../services/customerAuthApi'
@@ -82,6 +83,10 @@ export type StoreOrder = {
   status: string
   delivery: 'DELIVERY' | 'RECOJO_TIENDA'
   customer: StoreCustomer
+  deliveryRecipient: string
+  deliveryPhone: string
+  storeBranchName: string
+  storeBranchAddress: string
   address: string
   deliveryAddress: Pick<StoreCustomer, 'address' | 'district' | 'province' | 'department' | 'postalCode' | 'ubigeo' | 'reference'>
   receiptType: 'BOLETA' | 'FACTURA'
@@ -89,7 +94,12 @@ export type StoreOrder = {
   businessName: string
   payment: string
   items: StoreCartLine[]
+  subtotal?: number
+  igv?: number
+  shippingCost?: number
   total: number
+  couponCode?: string | null
+  couponDiscount?: number
 }
 
 function mapOrderSummary(order: CustomerOrderSummary, customer: StoreCustomer): StoreOrder {
@@ -107,9 +117,11 @@ function mapOrderSummary(order: CustomerOrderSummary, customer: StoreCustomer): 
     statusCode: order.estadoCodigo,
     status: order.estadoNombre,
     delivery,
-    customer: deliveryAddress?.destinatario
-      ? { ...customer, name: deliveryAddress.destinatario, phone: deliveryAddress.telefono ?? customer.phone }
-      : customer,
+    customer,
+    deliveryRecipient: deliveryAddress?.destinatario ?? '',
+    deliveryPhone: deliveryAddress?.telefono ?? '',
+    storeBranchName: deliveryAddress?.sucursalNombre ?? '',
+    storeBranchAddress: deliveryAddress?.sucursalDireccion ?? '',
     address,
     deliveryAddress: {
       address: deliveryAddress?.direccion ?? '',
@@ -134,12 +146,15 @@ function mapOrderDetail(order: CustomerOrderDetail, customer: StoreCustomer, pro
   const payment = order.pagos[0]?.metodoPago
   return {
     ...summary,
-    customer: order.datosEntrega?.destinatario
-      ? { ...customer, name: order.datosEntrega.destinatario, phone: order.datosEntrega.telefono ?? customer.phone }
-      : customer,
+    customer,
     businessRuc: order.ruc ?? '',
     businessName: order.razonSocial ?? '',
     payment: payment ?? 'No registrado',
+    couponCode: order.codigoCupon,
+    couponDiscount: order.descuentoCupon,
+    subtotal: order.subtotal,
+    igv: order.igv,
+    shippingCost: order.costoEnvio,
     items: order.detalles.map((line) => {
       const product = products.find((item) => item.id === line.productoId)
       return {
@@ -174,15 +189,18 @@ export type StoreReview = {
   createdAt: string
 }
 
-const categoryCardImage = 'https://res.cloudinary.com/dfmveqhud/image/upload/v1791741539/lucid-origin_Una_imagen_de_categor%C3%ADa_cer%C3%A1mica_presentada_como_una_composici%C3%B3n_de_cat%C3%A1logo-0_mmpykb.jpg'
-
-const categoryPresets: StoreCategory[] = [
-  { slug: 'tazas', name: 'Tazas', note: 'Rituales de cada mañana', image: categoryCardImage },
-  { slug: 'platos', name: 'Platos', note: 'Mesas con identidad', image: categoryCardImage },
-  { slug: 'bowls', name: 'Bowls', note: 'Formas para compartir', image: categoryCardImage },
-  { slug: 'jarrones', name: 'Jarrones', note: 'Volúmenes con presencia', image: categoryCardImage },
-  { slug: 'macetas', name: 'Macetas', note: 'Naturaleza dentro de casa', image: categoryCardImage },
-  { slug: 'decoracion', name: 'Decoración', note: 'Objetos que guardan memoria', image: categoryCardImage },
+const categoryPresets: Pick<StoreCategory, 'name' | 'note'>[] = [
+  { name: 'Baños', note: 'Detalles de cerámica para renovar el baño' },
+  { name: 'Tazas', note: 'Rituales de cada mañana' },
+  { name: 'Platos', note: 'Mesas con identidad' },
+  { name: 'Vajillas', note: 'Piezas para vestir tu mesa' },
+  { name: 'Bowls', note: 'Formas para compartir' },
+  { name: 'Jarrones', note: 'Volúmenes con presencia' },
+  { name: 'Velas', note: 'Luz cálida para tus espacios' },
+  { name: 'Portavelas', note: 'Cerámica que acompaña la luz' },
+  { name: 'Velas y portavelas', note: 'Luz cálida en piezas de cerámica' },
+  { name: 'Macetas', note: 'Naturaleza dentro de casa' },
+  { name: 'Decoración', note: 'Objetos que guardan memoria' },
 ]
 
 type StoreContextValue = {
@@ -239,14 +257,12 @@ const sessionTokenKey = 'ceramax:auth-token'
 const sessionProfileKey = 'ceramax:auth-profile'
 const slugify = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 const normalizeCategory = (value: string) => slugify(value)
-const fallbackCategoryImage = categoryCardImage
-
 function mapCatalogProduct(
   product: Awaited<ReturnType<typeof fetchPublicCatalog>>[number],
   gallery: PublicProductGalleryImage[],
 ): StoreProduct {
   const price = product.precioFinal ?? product.precio
-  const image = gallery.find((item) => item.isPrimary)?.url ?? gallery[0]?.url
+  const image = gallery.find((item) => item.isPrimary)?.url ?? gallery[0]?.url ?? product.imagenUrl
   return {
     id: product.id,
     slug: `${slugify(product.nombre) || 'producto'}-${product.id.slice(0, 8)}`,
@@ -305,6 +321,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<StoreProduct[]>([])
   const productsRef = useRef<StoreProduct[]>([])
   const [categories, setCategories] = useState<StoreCategory[]>([])
+  const categoryImages = useRef(new Map<string, string>())
   const [catalogLoading, setCatalogLoading] = useState(true)
   const [catalogError, setCatalogError] = useState('')
   const catalogWarning = ''
@@ -352,9 +369,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         const refreshedProduct = mapCatalogProduct(product, [])
         const currentProduct = productsRef.current.find((item) => item.id === product.id)
         if (!currentProduct) return refreshedProduct
-        refreshedProduct.image = currentProduct.image
+        if (currentProduct.image !== fallbackProductImage || !product.imagenUrl) {
+          refreshedProduct.image = currentProduct.image
+        }
         refreshedProduct.gallery = currentProduct.gallery
         const unchanged = currentProduct.slug === refreshedProduct.slug
+          && currentProduct.image === refreshedProduct.image
           && currentProduct.name === refreshedProduct.name
           && currentProduct.category === refreshedProduct.category
           && currentProduct.collection === refreshedProduct.collection
@@ -375,11 +395,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       setCatalogError('')
       setCategories(categoryNames.map((name) => {
         const preset = categoryPresets.find((category) => normalizeCategory(category.name) === normalizeCategory(name))
+        const categoryKey = normalizeCategory(name)
+        let image = categoryImages.current.get(categoryKey)
+        if (!image) {
+          image = getRandomCategoryImage(name)
+          categoryImages.current.set(categoryKey, image)
+        }
         return {
           slug: slugify(name),
           name,
           note: preset?.note ?? 'Piezas de cerámica peruana hechas para tus espacios',
-          image: preset?.image ?? fallbackCategoryImage,
+          image,
         }
       }))
     } catch (error) {

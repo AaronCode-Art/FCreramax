@@ -35,7 +35,7 @@ export default function CategoriasPage() {
         <div className="breadcrumbs"><Link to="/">Inicio</Link><span>/</span><Link to="/categorias">Categorías</Link><span>/</span><span>{selected.name}</span></div>
         <div className="category-products-hero">
           <img
-            src="https://res.cloudinary.com/dfmveqhud/image/upload/v1791741810/lucid-origin_ahora_un_banner_de_categoria_de_ceramacia_decorativo_nada_de_letras_solo_imagen_-0_v5wbxw.jpg"
+            src={selected.image}
             alt=""
             aria-hidden="true"
           />
@@ -53,12 +53,12 @@ export default function CategoriasPage() {
         </div>
         <div className="catalog-results-layout">
           <aside className="catalog-sidebar" aria-label={`Filtros de ${selected.name}`}>
-            <div className="catalog-sidebar-heading"><span>Refina tu búsqueda</span><button type="button" onClick={clearFilters}>Limpiar</button></div>
+            <div className="catalog-sidebar-heading"><span>Filtros</span><button type="button" onClick={clearFilters}>Limpiar</button></div>
             <label className="catalog-search-field"><span>Buscar productos</span><span className="catalog-search-input-wrap">
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.5 4.5" /></svg>
               <input type="search" placeholder="Nombre, colección..." value={search} onChange={(event) => setSearchParams(event.target.value ? { search: event.target.value } : {})} />
             </span></label>
-            <label className="catalog-sort-field"><span>Ordenar por</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option value="recommended">Recomendados</option><option value="price-asc">Precio: menor a mayor</option><option value="price-desc">Precio: mayor a menor</option><option value="name">Nombre: A a Z</option></select></label>
+            <label className="catalog-sort-field"><span>Ordenar por</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option value="recommended">Recomendados</option><option value="discount-desc">Mejores descuentos</option><option value="price-asc">Precio: menor a mayor</option><option value="price-desc">Precio: mayor a menor</option><option value="name">Nombre: A a Z</option></select></label>
             <label className="catalog-price-filter"><span>Precio máximo</span><output>S/ {activeMaxPrice}</output><input type="range" min="0" max={maximum} step="5" value={activeMaxPrice} onChange={(event) => setMaxPrice(Number(event.target.value))} aria-label="Filtrar por precio máximo" /><small>Hasta S/ {activeMaxPrice}</small></label>
             <label className="catalog-stock-filter"><input type="checkbox" checked={inStockOnly} onChange={(event) => setInStockOnly(event.target.checked)} /><span>Solo disponibles</span></label>
           </aside>

@@ -291,24 +291,45 @@
 /* Ofertas */
 .cx-deals {
   position: relative;
+  isolation: isolate;
   margin-top: 84px;
   padding-block: 64px 70px;
   overflow: hidden;
   color: #fff;
-  background: #1b1310;
+  background:
+    radial-gradient(ellipse at 8% 12%, rgb(130 67 42 / 46%) 0%, rgb(91 49 33 / 26%) 30%, transparent 62%),
+    radial-gradient(ellipse at 88% 82%, rgb(87 57 39 / 32%) 0%, rgb(57 39 29 / 18%) 34%, transparent 66%),
+    linear-gradient(118deg, #382219 0%, #2c1c15 38%, #211813 72%, #191310 100%);
+}
+
+.cx-deals::before {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  content: '';
+  background: linear-gradient(
+    to bottom,
+    #fbf6ee 0,
+    rgb(251 246 238 / 0%) 54px,
+    rgb(251 246 238 / 0%) calc(100% - 54px),
+    #fbf6ee 100%
+  );
+  pointer-events: none;
 }
 
 .cx-deals-glow {
   position: absolute;
+  z-index: 0;
   inset: 0;
   background:
-    radial-gradient(40% 90% at 0% 0%, rgb(226 66 26 / 46%), transparent 70%),
-    radial-gradient(40% 80% at 100% 100%, rgb(31 111 107 / 34%), transparent 70%);
+    radial-gradient(ellipse 52% 85% at 0% 10%, rgb(198 112 70 / 18%) 0%, rgb(139 78 51 / 10%) 38%, transparent 76%),
+    radial-gradient(ellipse 50% 88% at 100% 100%, rgb(128 87 58 / 18%) 0%, rgb(92 63 44 / 9%) 42%, transparent 78%);
   pointer-events: none;
 }
 
 .cx-deals-head {
   position: relative;
+  z-index: 2;
   margin-bottom: 32px;
   display: flex;
   align-items: flex-end;
@@ -357,6 +378,7 @@
 
 .cx-rail {
   position: relative;
+  z-index: 2;
   padding-block: 14px 26px;
   display: flex;
   gap: 18px;

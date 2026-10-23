@@ -83,6 +83,7 @@ export function SiteHeader() {
             <Link className="dropdown-all" to="/categorias" onClick={() => { closeMenu(); closeSearch() }}>Ver todas las categorías</Link>
           </div>
         </div>
+        <NavLink className={navClass} to="/cupones" onClick={() => { closeMenu(); closeSearch() }}>Cupones</NavLink>
         <NavLink className={navClass} to="/contacto" onClick={() => { closeMenu(); closeSearch() }}>Contacto</NavLink>
       </nav>
       <div className="header-actions">

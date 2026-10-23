@@ -13,6 +13,7 @@ export type PublicCatalogProduct = {
   precioFinal: number | null
   descuentoPorcentaje: number | null
   stockDisponible: number
+  imagenUrl: string | null
 }
 
 export type PublicProductSpecification = {
@@ -41,6 +42,7 @@ function parseProduct(value: unknown): PublicCatalogProduct {
     || typeof value.nombre !== 'string'
     || typeof value.categoria !== 'string'
     || typeof value.stockDisponible !== 'number'
+    || !(value.imagenUrl == null || typeof value.imagenUrl === 'string')
     || typeof value.precio !== 'number'
     || (value.precioFinal !== null && typeof value.precioFinal !== 'number')
     || (value.descuentoPorcentaje !== null && typeof value.descuentoPorcentaje !== 'number')
@@ -57,6 +59,7 @@ function parseProduct(value: unknown): PublicCatalogProduct {
     precioFinal: value.precioFinal,
     descuentoPorcentaje: value.descuentoPorcentaje,
     stockDisponible: value.stockDisponible,
+    imagenUrl: typeof value.imagenUrl === 'string' ? value.imagenUrl : null,
   }
 }
 

@@ -16,10 +16,13 @@ export type CustomerCheckoutRequest = {
   metodoPago: 'SIMULADO'
   medioPagoSimulado: 'YAPE' | 'PLIN' | 'TARJETA'
   detalles: { productoId: string; cantidad: number }[]
+  codigoCupon: string | null
 }
 
 export type CheckoutQuote = {
   subtotal: number
+  descuentoCupon: number
+  codigoCupon: string | null
   igv: number
   costoEnvio: number
   total: number
@@ -58,6 +61,7 @@ export type CustomerOrderDetail = CustomerOrderSummary & {
   razonSocial: string | null
   subtotal: number
   descuentoCupon: number
+  codigoCupon: string | null
   costoEnvio: number
   igv: number
   detalles: {
@@ -161,6 +165,7 @@ function readDetail(value: unknown): CustomerOrderDetail {
     razonSocial: nullableString(value.razonSocial),
     subtotal: requiredNumber(value.subtotal, 'subtotal'),
     descuentoCupon: requiredNumber(value.descuentoCupon, 'descuento'),
+    codigoCupon: nullableString(value.codigoCupon),
     costoEnvio: requiredNumber(value.costoEnvio, 'costo de envío'),
     igv: requiredNumber(value.igv, 'IGV'),
     detalles,
@@ -168,14 +173,20 @@ function readDetail(value: unknown): CustomerOrderDetail {
   }
 }
 
-export async function quoteCustomerCheckout(tipoEntrega: CustomerCheckoutRequest['tipoEntrega'], token: string): Promise<CheckoutQuote> {
+export async function quoteCustomerCheckout(
+  tipoEntrega: CustomerCheckoutRequest['tipoEntrega'],
+  codigoCupon: string | null,
+  token: string,
+): Promise<CheckoutQuote> {
   const response = await apiRequest('/api/v1/pedidos/web/checkout/cotizacion', {
     method: 'POST',
-    body: JSON.stringify({ tipoEntrega }),
+    body: JSON.stringify({ tipoEntrega, codigoCupon }),
   }, token)
   if (!isRecord(response)) throw new Error('La API devolvió una cotización no válida.')
   return {
     subtotal: requiredNumber(response.subtotal, 'subtotal'),
+    descuentoCupon: requiredNumber(response.descuentoCupon, 'descuento de cupón'),
+    codigoCupon: nullableString(response.codigoCupon),
     igv: requiredNumber(response.igv, 'IGV'),
     costoEnvio: requiredNumber(response.costoEnvio, 'costo de envío'),
     total: requiredNumber(response.total, 'total'),

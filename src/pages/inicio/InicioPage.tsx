@@ -1,6 +1,7 @@
 import './InicioHome.css'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { getRandomCategoryImage } from '../../context/categoryImages'
 import { ProductCard, ProductGrid } from '../../components/catalogo/ProductCard'
 import { CatalogStatus } from '../../components/catalogo/CatalogStatus'
 import { CategoryCarousel3D } from '../../components/motion/CategoryCarousel3D'
@@ -17,6 +18,7 @@ const BENEFITS = [
 export default function InicioPage() {
   const { categories, categoryCounts, discountedProducts, shelfProducts, topDiscount, catalogLoading, catalogError, refreshCatalog } = useInicioPage()
   const dealRail = useRef<HTMLDivElement>(null)
+  const [heroImage] = useState(() => getRandomCategoryImage('cerámica'))
   const featuredDeal = discountedProducts[0]
   const featuredInfo = featuredDeal ? productDeal(featuredDeal) : null
   const hasOffers = !catalogLoading && !catalogError && discountedProducts.length > 0
@@ -42,8 +44,8 @@ export default function InicioPage() {
           <div className="cx-hero-visual">
             <div className="cx-arch">
               <img
-                src="https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=1400&q=85"
-                alt="Platos artesanales de cerámica sobre una mesa de madera"
+                src={heroImage}
+                alt="Piezas artesanales de cerámica para el hogar"
                 fetchPriority="high"
               />
             </div>
@@ -97,7 +99,6 @@ export default function InicioPage() {
             </div>
           </div>
           <div className="cx-deals-tools">
-            <Link className="cx-link cx-link-light" to="/productos">Ver todos los productos <span aria-hidden="true">→</span></Link>
             <button type="button" className="cx-round" aria-label="Ofertas anteriores" onClick={() => scrollRail(-1)}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 10h-12m5-5-5 5 5 5" /></svg></button>
             <button type="button" className="cx-round" aria-label="Más ofertas" onClick={() => scrollRail(1)}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 10h12m-5-5 5 5-5 5" /></svg></button>
           </div>
@@ -110,7 +111,7 @@ export default function InicioPage() {
       {!catalogLoading && !catalogError && shelfProducts.length > 0 && <section className="cx-section cx-shelf page-shell" aria-labelledby="home-shelf-title">
         <div className="cx-head">
           <h2 id="home-shelf-title">Piezas para tu espacio</h2>
-          <Link className="cx-link" to="/productos">Ver productos <span aria-hidden="true">→</span></Link>
+          <Link className="cx-link" to="/productos">Ver productos</Link>
         </div>
         <ProductGrid products={shelfProducts} />
       </section>}

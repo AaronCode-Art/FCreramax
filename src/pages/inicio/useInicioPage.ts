@@ -16,9 +16,15 @@ export function useInicioPage() {
     return counts
   }, [products])
   const shelfProducts = useMemo(() => {
-    const offerIds = new Set(discountedProducts.map((product) => product.id))
-    return products.filter((product) => !offerIds.has(product.id) && product.stock > 0).slice(0, 8)
-  }, [products, discountedProducts])
+    const availableProducts = products.filter((product) => (product.discountPercent ?? 0) <= 0 && product.stock > 0)
+    for (let index = availableProducts.length - 1; index > 0; index -= 1) {
+      const randomIndex = Math.floor(Math.random() * (index + 1))
+      const currentProduct = availableProducts[index]
+      availableProducts[index] = availableProducts[randomIndex]
+      availableProducts[randomIndex] = currentProduct
+    }
+    return availableProducts.slice(0, 12)
+  }, [products])
   const topDiscount = discountedProducts.reduce((max, product) => Math.max(max, Math.round(product.discountPercent ?? 0)), 0)
 
   return { categories, categoryCounts, discountedProducts, shelfProducts, topDiscount, catalogLoading, catalogError, refreshCatalog }

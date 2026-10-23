@@ -36,7 +36,6 @@ export function useDetalleProductoPage() {
   const [submittingReview, setSubmittingReview] = useState(false)
   const [reviewSubmitError, setReviewSubmitError] = useState('')
   const [reviewSubmitMessage, setReviewSubmitMessage] = useState('')
-  const [relatedProductIds, setRelatedProductIds] = useState<string[]>([])
   const completedOrders = useMemo(
     () => orders.filter((order) => order.statusCode === 'COMPLETADA'),
     [orders],
@@ -57,9 +56,18 @@ export function useDetalleProductoPage() {
   const reviewsLoading = Boolean(productId) && reviewsResult?.productId !== productId
   const reviewsError = reviewsResult?.productId === productId ? reviewsResult?.error ?? '' : ''
   const hasReviewedProduct = Boolean(customer?.id && productReviews.some((review) => review.clienteId === customer.id))
-  const relatedProducts = relatedProductIds
-    .map((relatedProductId) => products.find((item) => item.id === relatedProductId))
-    .filter((item) => item !== undefined)
+  const relatedProducts = useMemo(() => products
+    .filter((item) => item.id !== productId && item.stock > 0)
+    .sort((first, second) => {
+      const firstSameCategory = first.category === product?.category
+      const secondSameCategory = second.category === product?.category
+      if (firstSameCategory !== secondSameCategory) return firstSameCategory ? -1 : 1
+      const firstDiscounted = (first.discountPercent ?? 0) > 0
+      const secondDiscounted = (second.discountPercent ?? 0) > 0
+      if (firstDiscounted !== secondDiscounted) return firstDiscounted ? -1 : 1
+      return first.name.localeCompare(second.name, 'es')
+    })
+    .slice(0, 4), [product?.category, productId, products])
 
   useEffect(() => {
     if (!authToken || !productId) return
@@ -150,17 +158,6 @@ export function useDetalleProductoPage() {
     })
     return () => { active = false }
   }, [authToken, completedOrderIds, completedOrders, loadOrderDetails, ordersLoading, productId])
-
-  useEffect(() => {
-    const candidates = products.filter((item) => item.id !== productId && item.stock > 0)
-    for (let index = candidates.length - 1; index > 0; index -= 1) {
-      const randomIndex = Math.floor(Math.random() * (index + 1))
-      const candidate = candidates[index]
-      candidates[index] = candidates[randomIndex]
-      candidates[randomIndex] = candidate
-    }
-    setRelatedProductIds(candidates.slice(0, 4).map((item) => item.id))
-  }, [products, productId])
 
   function selectReviewImages(event: ChangeEvent<HTMLInputElement>) {
     const selected = Array.from(event.currentTarget.files ?? [])

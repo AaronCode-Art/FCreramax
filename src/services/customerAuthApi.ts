@@ -182,3 +182,21 @@ export async function loginCustomer(email: string, password: string): Promise<{ 
   const profile = readProfile(await apiRequest('/api/v1/clientes/mio', {}, auth.token))
   return { token: auth.token, customer: toStoreCustomer(profile) }
 }
+
+export async function requestCustomerPasswordRecovery(identificador: string): Promise<void> {
+  await apiRequest('/api/auth/cliente/recuperacion', {
+    method: 'POST',
+    body: JSON.stringify({ identificador: identificador.trim() }),
+  })
+}
+
+export async function resetCustomerPassword(
+  identificador: string,
+  codigo: string,
+  nuevaContrasena: string,
+): Promise<void> {
+  await apiRequest('/api/auth/cliente/restablecer-contrasena', {
+    method: 'POST',
+    body: JSON.stringify({ identificador: identificador.trim(), codigo: codigo.trim(), nuevaContrasena }),
+  })
+}

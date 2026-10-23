@@ -15,6 +15,7 @@ export function SiteFooter() {
           <Link to="/">Inicio</Link>
           <Link to="/productos">Productos</Link>
           <Link to="/categorias">Categorías</Link>
+          <Link to="/cupones">Cupones</Link>
           <Link to="/contacto">Contacto</Link>
         </nav>
         <div className="footer-column">

@@ -6,6 +6,8 @@ import {
   completeCustomerRegistration,
   lookupCustomerForRegistration,
   loginCustomer,
+  requestCustomerPasswordRecovery,
+  resetCustomerPassword,
 } from '../../services/customerAuthApi'
 
 const emptyCustomer: StoreCustomer = {
@@ -27,6 +29,19 @@ export function AuthModal() {
   const [lookupFailed, setLookupFailed] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [recoveryMode, setRecoveryMode] = useState<'request' | 'reset' | null>(null)
+  const [recoveryIdentifier, setRecoveryIdentifier] = useState('')
+  const [recoveryCode, setRecoveryCode] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [recoveryNotice, setRecoveryNotice] = useState('')
+  const registrationPasswordHasSixDigits = (password.match(/[0-9]/g) ?? []).length >= 6
+  const registrationPasswordHasUppercase = /[A-Z]/.test(password)
+  const registrationPasswordHasSymbol = /[^\p{L}\p{N}]/u.test(password)
+  const registrationPasswordHasNoDigitSequence = !/(?:012|123|234|345|456|567|678|789|987|876|765|654|543|432|321|210)/.test(password)
+  const passwordHasSixDigits = (newPassword.match(/[0-9]/g) ?? []).length >= 6
+  const passwordHasUppercase = /[A-Z]/.test(newPassword)
+  const passwordHasSymbol = /[^\p{L}\p{N}]/u.test(newPassword)
+  const passwordHasNoDigitSequence = !/(?:012|123|234|345|456|567|678|789|987|876|765|654|543|432|321|210)/.test(newPassword)
   const selectedDepartment = departmentOptions.find((option) => option.name.toLocaleLowerCase('es-PE') === customer.department.toLocaleLowerCase('es-PE'))
   const provinceOptions = selectedDepartment ? provinces.byRegionId(selectedDepartment.id) : []
   const selectedProvince = provinceOptions.find((option) => option.name.toLocaleLowerCase('es-PE') === customer.province.toLocaleLowerCase('es-PE'))
@@ -105,6 +120,64 @@ export function AuthModal() {
     setPassword('')
   }
 
+  const changeAuthMode = (mode: 'login' | 'register') => {
+    setRecoveryMode(null)
+    setRecoveryNotice('')
+    setError('')
+    openAuth(mode)
+  }
+
+  async function submitRecovery(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setError('')
+    setRecoveryNotice('')
+    if (recoveryMode === 'request') {
+      const identifier = recoveryIdentifier.trim()
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier) && !/^[0-9]{8}$/.test(identifier)) {
+        setError('Ingresa un correo válido o un DNI de 8 dígitos.')
+        return
+      }
+      setBusy(true)
+      try {
+        await requestCustomerPasswordRecovery(identifier)
+        setRecoveryMode('reset')
+        setRecoveryNotice('Si la cuenta existe y tiene un correo registrado, enviamos un código. Revisa también la carpeta de correo no deseado.')
+      } catch (recoveryError) {
+        setError(recoveryError instanceof Error ? recoveryError.message : 'No se pudo solicitar el código.')
+      } finally {
+        setBusy(false)
+      }
+      return
+    }
+
+    if (!/^[0-9]{6}$/.test(recoveryCode)) {
+      setError('Ingresa el código de 6 dígitos recibido por correo.')
+      return
+    }
+    if (newPassword.length > 100) {
+      setError('La nueva contraseña no puede superar 100 caracteres.')
+      return
+    }
+    if (!passwordHasSixDigits || !passwordHasUppercase || !passwordHasSymbol || !passwordHasNoDigitSequence) {
+      setError('La contraseña debe tener al menos 6 dígitos, una mayúscula y un símbolo, sin secuencias numéricas como 123 o 321.')
+      return
+    }
+    setBusy(true)
+    try {
+      await resetCustomerPassword(recoveryIdentifier, recoveryCode, newPassword)
+      setEmail(recoveryIdentifier.includes('@') ? recoveryIdentifier.trim() : '')
+      setPassword('')
+      setRecoveryMode(null)
+      setRecoveryCode('')
+      setNewPassword('')
+      setRecoveryNotice('Contraseña actualizada. Ya puedes iniciar sesión con tu nueva contraseña.')
+    } catch (recoveryError) {
+      setError(recoveryError instanceof Error ? recoveryError.message : 'No se pudo cambiar la contraseña.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
   const setField = <K extends keyof StoreCustomer>(key: K, value: StoreCustomer[K]) => {
     setCustomer((current) => ({ ...current, [key]: value }))
   }
@@ -156,8 +229,12 @@ export function AuthModal() {
         showError('El celular debe empezar con 9 y tener exactamente 9 dígitos.')
         return
       }
-      if (password.length < 8 || password.length > 100) {
-        showError('La contraseña debe tener entre 8 y 100 caracteres.')
+      if (password.length > 100
+        || !registrationPasswordHasSixDigits
+        || !registrationPasswordHasUppercase
+        || !registrationPasswordHasSymbol
+        || !registrationPasswordHasNoDigitSequence) {
+        showError('La contraseña debe tener al menos 6 dígitos, una mayúscula y un símbolo, sin secuencias numéricas como 123 o 321.')
         return
       }
       if (!customer.address.trim() || !customer.department || !customer.province || !customer.district
@@ -196,7 +273,7 @@ export function AuthModal() {
     <div className="auth-modal-backdrop" role="presentation" onMouseDown={(event) => {
       if (event.target === event.currentTarget) closeAuth()
     }}>
-      <section className={`auth-modal auth-modal-${authMode}`} role="dialog" aria-modal="true" aria-labelledby="auth-title">
+      <section className={`auth-modal auth-modal-${authMode}${recoveryMode ? ' auth-modal-recovery' : ''}`} role="dialog" aria-modal="true" aria-labelledby="auth-title">
         <button className="dialog-close" type="button" aria-label="Cerrar" onClick={closeAuth}>×</button>
         <div className="auth-modal-art">
           <div className="auth-brand-lockup">
@@ -211,14 +288,46 @@ export function AuthModal() {
           <span className="auth-art-index">COLECCIÓN CERÁMAX · 01</span>
         </div>
         <div className="auth-modal-main">
-          <p className="eyebrow">Tu espacio Cerámax</p>
-          <h2 id="auth-title">{authMode === 'login' ? 'Qué gusto tenerte de vuelta.' : 'Crea tu cuenta y descubre.'}</h2>
-          <p className="auth-modal-description">Guarda tus piezas favoritas y consulta tus pedidos desde un solo lugar.</p>
-          <div className="auth-modal-tabs" role="tablist" aria-label="Acceso a la cuenta">
-            <button type="button" role="tab" aria-selected={authMode === 'login'} className={authMode === 'login' ? 'auth-tab-active' : ''} onClick={() => { setError(''); openAuth('login') }}>Iniciar sesión</button>
-            <button type="button" role="tab" aria-selected={authMode === 'register'} className={authMode === 'register' ? 'auth-tab-active' : ''} onClick={() => { setError(''); clearRegistration(); openAuth('register') }}>Crear cuenta</button>
-          </div>
-          <form className="auth-form customer-form" noValidate onSubmit={submit}>
+          <p className="eyebrow">{recoveryMode ? 'RECUPERACIÓN SEGURA' : 'Tu espacio Cerámax'}</p>
+          <h2 id="auth-title">{recoveryMode ? 'Recupera el acceso a tu cuenta.' : authMode === 'login' ? 'Qué gusto tenerte de vuelta.' : 'Crea tu cuenta y descubre.'}</h2>
+          <p className="auth-modal-description">{recoveryMode ? 'Verificaremos tu identidad antes de permitirte crear una contraseña nueva.' : 'Guarda tus piezas favoritas y consulta tus pedidos desde un solo lugar.'}</p>
+          {!recoveryMode && <div className="auth-modal-tabs" role="tablist" aria-label="Acceso a la cuenta">
+            <button type="button" role="tab" aria-selected={authMode === 'login'} className={authMode === 'login' ? 'auth-tab-active' : ''} onClick={() => changeAuthMode('login')}>Iniciar sesión</button>
+            <button type="button" role="tab" aria-selected={authMode === 'register'} className={authMode === 'register' ? 'auth-tab-active' : ''} onClick={() => { clearRegistration(); changeAuthMode('register') }}>Crear cuenta</button>
+          </div>}
+          {recoveryMode ? (
+            <form className="auth-form customer-form" noValidate onSubmit={submitRecovery}>
+              <div className="recovery-progress" aria-label={recoveryMode === 'request' ? 'Paso 1 de 2: verificar cuenta' : 'Paso 2 de 2: crear contraseña'}>
+                <span className="recovery-progress-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M4 6.75h16A1.75 1.75 0 0 1 21.75 8.5v9A1.75 1.75 0 0 1 20 19.25H4A1.75 1.75 0 0 1 2.25 17.5v-9A1.75 1.75 0 0 1 4 6.75Z" /><path d="m3 8 9 6.25L21 8" /></svg>
+                </span>
+                <span className="recovery-step">PASO {recoveryMode === 'request' ? '1' : '2'} DE 2</span>
+                <strong>{recoveryMode === 'request' ? 'Verifica tu cuenta' : 'Crea una contraseña nueva'}</strong>
+                <span className="recovery-progress-track" aria-hidden="true"><i className={recoveryMode === 'reset' ? 'is-complete' : ''} /></span>
+              </div>
+              <label>Correo electrónico o DNI<input required autoComplete="username" disabled={recoveryMode === 'reset'} value={recoveryIdentifier} onChange={(event) => setRecoveryIdentifier(event.target.value)} /></label>
+              {recoveryMode === 'reset' && <>
+                <div className="recovery-delivery-note"><span aria-hidden="true">✉</span><p>Si la cuenta existe, enviamos el código al correo registrado. Revisa también spam.</p></div>
+                <label>Código de verificación<input className="recovery-code-input" required inputMode="numeric" autoComplete="one-time-code" maxLength={6} placeholder="······" value={recoveryCode} onChange={(event) => setRecoveryCode(event.target.value.replace(/\D/g, '').slice(0, 6))} /><small>Es de 6 dígitos y vence en 10 minutos.</small></label>
+                <label>Nueva contraseña<input required type="password" autoComplete="new-password" minLength={6} maxLength={100} value={newPassword} onChange={(event) => setNewPassword(event.target.value)} /></label>
+                <ul className="recovery-password-rules" aria-label="Requisitos de contraseña">
+                  <li className={passwordHasSixDigits ? 'is-met' : ''}>Al menos 6 dígitos numéricos</li>
+                  <li className={passwordHasUppercase ? 'is-met' : ''}>Al menos una letra mayúscula</li>
+                  <li className={passwordHasSymbol ? 'is-met' : ''}>Al menos un símbolo, por ejemplo ?</li>
+                  <li className={passwordHasNoDigitSequence ? 'is-met' : ''}>Sin secuencias como 123 o 321</li>
+                </ul>
+              </>}
+              {recoveryNotice && <p className="auth-success" role="status">{recoveryNotice}</p>}
+              {error && <p className="auth-error" role="alert">{error}</p>}
+              <button className="button button-dark auth-submit-button" type="submit" disabled={busy}>
+                {busy ? 'Procesando…' : recoveryMode === 'request' ? 'Enviar código seguro' : 'Guardar nueva contraseña'}<span aria-hidden="true">→</span>
+              </button>
+              <div className="recovery-secondary-actions">
+                {recoveryMode === 'reset' && <button className="auth-recovery-back" type="button" onClick={() => { setRecoveryMode('request'); setRecoveryCode(''); setNewPassword(''); setRecoveryNotice(''); setError('') }}>Cambiar correo o DNI</button>}
+                <button className="auth-recovery-back" type="button" onClick={() => { setRecoveryMode(null); setRecoveryNotice(''); setError('') }}>Volver al inicio de sesión</button>
+              </div>
+            </form>
+          ) : <form className="auth-form customer-form" noValidate onSubmit={submit}>
             {authMode === 'register' && (
               <div className="register-fields">
                 <div className="document-fields">
@@ -258,14 +367,22 @@ export function AuthModal() {
             )}
             <div className="register-account-fields">
               <label>Correo electrónico<input required type="email" autoComplete="email" value={authMode === 'login' ? email : customer.email} onChange={(event) => authMode === 'login' ? setEmail(event.target.value) : setField('email', event.target.value)} /></label>
-              <label>Contraseña<input required type="password" autoComplete={authMode === 'login' ? 'current-password' : 'new-password'} minLength={8} maxLength={100} value={password} onChange={(event) => setPassword(event.target.value)} /></label>
+              <label>Contraseña<input required type="password" autoComplete={authMode === 'login' ? 'current-password' : 'new-password'} minLength={authMode === 'login' ? undefined : 6} maxLength={100} value={password} onChange={(event) => setPassword(event.target.value)} /></label>
             </div>
+            {authMode === 'register' && <ul className="recovery-password-rules" aria-label="Requisitos de contraseña">
+              <li className={registrationPasswordHasSixDigits ? 'is-met' : ''}>Al menos 6 dígitos numéricos</li>
+              <li className={registrationPasswordHasUppercase ? 'is-met' : ''}>Al menos una letra mayúscula</li>
+              <li className={registrationPasswordHasSymbol ? 'is-met' : ''}>Al menos un símbolo, por ejemplo ?</li>
+              <li className={registrationPasswordHasNoDigitSequence ? 'is-met' : ''}>Sin secuencias como 123 o 321</li>
+            </ul>}
             {error && <p className="auth-error" role="alert">{error}</p>}
+            {recoveryNotice && <p className="auth-success" role="status">{recoveryNotice}</p>}
             <button className="button button-dark auth-submit-button" type="submit" disabled={busy}>
               {busy ? 'Procesando…' : authMode === 'login' ? 'Iniciar sesión' : 'Crear mi cuenta'}<span aria-hidden="true">→</span>
             </button>
+            {authMode === 'login' && <button className="auth-recovery-back" type="button" onClick={() => { setRecoveryMode('request'); setRecoveryIdentifier(email); setRecoveryNotice(''); setError('') }}>¿Olvidaste tu contraseña?</button>}
             <p className="customer-form-note">{authMode === 'login' ? 'Usa el correo y la contraseña de tu cuenta Cerámax.' : 'Tus datos se validan y guardan de forma segura en Cerámax.'}</p>
-          </form>
+          </form>}
         </div>
       </section>
     </div>
