@@ -1,3 +1,4 @@
+import { cleanPersonName, cleanText } from '../../lib/forms'
 import './AuthModal.css'
 import { useEffect, useState, type FormEvent } from 'react'
 import { departments, districts, provinces } from '@perucode/ubigeo-peru'
@@ -179,7 +180,10 @@ export function AuthModal() {
   }
 
   const setField = <K extends keyof StoreCustomer>(key: K, value: StoreCustomer[K]) => {
-    setCustomer((current) => ({ ...current, [key]: value }))
+    const safe = typeof value === 'string'
+      ? (key === 'firstNames' || key === 'lastNames' ? cleanPersonName(value) : key === 'email' ? value.replace(/[\s<>]/g, '').slice(0, 120) : cleanText(value, 200))
+      : value
+    setCustomer((current) => ({ ...current, [key]: safe as StoreCustomer[K] }))
   }
 
   const showError = (message: string) => {
@@ -320,7 +324,7 @@ export function AuthModal() {
               {recoveryNotice && <p className="auth-success" role="status">{recoveryNotice}</p>}
               {error && <p className="auth-error" role="alert">{error}</p>}
               <button className="button button-dark auth-submit-button" type="submit" disabled={busy}>
-                {busy ? 'Procesando…' : recoveryMode === 'request' ? 'Enviar código seguro' : 'Guardar nueva contraseña'}<span aria-hidden="true">→</span>
+                {busy ? 'Procesando…' : recoveryMode === 'request' ? 'Enviar código seguro' : 'Guardar nueva contraseña'}
               </button>
               <div className="recovery-secondary-actions">
                 {recoveryMode === 'reset' && <button className="auth-recovery-back" type="button" onClick={() => { setRecoveryMode('request'); setRecoveryCode(''); setNewPassword(''); setRecoveryNotice(''); setError('') }}>Cambiar correo o DNI</button>}
@@ -366,7 +370,7 @@ export function AuthModal() {
               </div>
             )}
             <div className="register-account-fields">
-              <label>Correo electrónico<input required type="email" autoComplete="email" value={authMode === 'login' ? email : customer.email} onChange={(event) => authMode === 'login' ? setEmail(event.target.value) : setField('email', event.target.value)} /></label>
+              <label>Correo electrónico<input required type="email" autoComplete="email" maxLength={120} spellCheck={false} autoCapitalize="none" value={authMode === 'login' ? email : customer.email} onChange={(event) => authMode === 'login' ? setEmail(event.target.value) : setField('email', event.target.value)} /></label>
               <label>Contraseña<input required type="password" autoComplete={authMode === 'login' ? 'current-password' : 'new-password'} minLength={authMode === 'login' ? undefined : 6} maxLength={100} value={password} onChange={(event) => setPassword(event.target.value)} /></label>
             </div>
             {authMode === 'register' && <ul className="recovery-password-rules" aria-label="Requisitos de contraseña">
@@ -378,7 +382,7 @@ export function AuthModal() {
             {error && <p className="auth-error" role="alert">{error}</p>}
             {recoveryNotice && <p className="auth-success" role="status">{recoveryNotice}</p>}
             <button className="button button-dark auth-submit-button" type="submit" disabled={busy}>
-              {busy ? 'Procesando…' : authMode === 'login' ? 'Iniciar sesión' : 'Crear mi cuenta'}<span aria-hidden="true">→</span>
+              {busy ? 'Procesando…' : authMode === 'login' ? 'Iniciar sesión' : 'Crear mi cuenta'}
             </button>
             {authMode === 'login' && <button className="auth-recovery-back" type="button" onClick={() => { setRecoveryMode('request'); setRecoveryIdentifier(email); setRecoveryNotice(''); setError('') }}>¿Olvidaste tu contraseña?</button>}
             <p className="customer-form-note">{authMode === 'login' ? 'Usa el correo y la contraseña de tu cuenta Cerámax.' : 'Tus datos se validan y guardan de forma segura en Cerámax.'}</p>

@@ -1,0 +1,108 @@
+.store-confirm-dialog {
+  width: min(460px, calc(100vw - 32px));
+  max-width: none;
+  max-height: min(90dvh, 720px);
+  padding: 0;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid rgb(255 255 255 / 55%);
+  border-radius: 16px;
+  box-shadow: 0 24px 80px rgb(22 18 14 / 28%);
+}
+
+.store-confirm-dialog::backdrop {
+  background: rgb(25 20 16 / 58%);
+  backdrop-filter: blur(3px);
+}
+
+.store-confirm-dialog-content {
+  display: grid;
+  gap: 12px;
+  padding: clamp(24px, 6vw, 36px);
+}
+
+.store-confirm-dialog-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  color: #8c4a26;
+  background: #f4e3d5;
+  border: 1px solid #e8cdb8;
+  border-radius: 50%;
+  font-family: var(--serif);
+  font-size: 24px;
+}
+
+.store-confirm-dialog .eyebrow {
+  margin: 0;
+  color: var(--clay);
+  font-size: 13px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.store-confirm-dialog h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(24px, 6vw, 32px);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.store-confirm-dialog-description {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.store-confirm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.store-confirm-dialog-actions .button {
+  min-height: 44px;
+}
+
+.store-confirm-dialog-actions .button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.store-confirm-dialog-error {
+  margin: 0;
+  padding: 11px 13px;
+  color: #8f3027;
+  background: #fff0ed;
+  border: 1px solid #ecc8c1;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.store-confirm-dialog :focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 3px;
+}
+
+@media (max-width: 420px) {
+  .store-confirm-dialog-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}
+
+.store-confirm-dialog-icon-success { color: #1f5d33; background: #dcf0e1; border-color: #b9dcc3; }
+.store-confirm-dialog-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.store-confirm-dialog h2 { margin: 0; font-size: 24px; line-height: 1.25; text-wrap: balance; }
+.store-confirm-dialog-description { margin: 0; font-size: 16px; line-height: 1.55; }
+.store-confirm-dialog-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.store-confirm-dialog-actions .button { flex: 1 1 160px; min-height: 52px; font-size: 16px; }
+.store-confirm-product { display: flex; align-items: center; gap: 14px; padding: 10px; background: #fff; border: 1px solid var(--line); border-radius: 12px; }
+.store-confirm-product img { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; }
+.store-confirm-product strong { font-size: 16px; line-height: 1.3; }

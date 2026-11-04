@@ -79,7 +79,7 @@ export default function CategoriasPage() {
             <div className="directory-content">
               <span className="directory-index">{String(index + 1).padStart(2, '0')} · {count} {count === 1 ? 'pieza' : 'piezas'}</span>
               <h2>{category.name}</h2><p>{category.note}. Descubre las piezas de esta colección.</p>
-              <span className="text-link">Ver categoría <span aria-hidden="true">→</span></span>
+              <span className="text-link">Ver categoría</span>
             </div>
           </Link>
         })}

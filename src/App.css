@@ -4,7 +4,7 @@
 
 .auth-modal .customer-form-note {
   margin: 18px 0 0;
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
@@ -109,7 +109,7 @@
 .quick-view-content > .eyebrow {
   margin: 0 0 9px;
   color: var(--clay);
-  font-size: 9px;
+  font-size: 13px;
   letter-spacing: 0.13em;
   text-transform: uppercase;
 }
@@ -117,7 +117,7 @@
 .quick-view-content > p:not(.product-category, .eyebrow) {
   margin: 16px 0 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.85;
 }
 
@@ -189,7 +189,7 @@
   padding-top: 13px;
   color: var(--muted);
   border-top: 1px solid var(--line);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .auth-modal .customer-form {
@@ -205,7 +205,7 @@
   min-width: 0;
   gap: 8px;
   color: #514b43;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.4;
 }
 
@@ -213,14 +213,14 @@
   min-height: 46px;
   padding: 11px 13px;
   border-radius: 7px;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .auth-modal .customer-form select {
   min-height: 46px;
   padding: 11px 13px;
   border-radius: 7px;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .auth-modal .dialog-close {

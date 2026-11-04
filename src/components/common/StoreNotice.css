@@ -1,105 +1,132 @@
+/* Aviso: arriba y al centro, justo debajo de la cabecera para no tapar sus botones. */
 .notice {
   position: fixed;
   z-index: 60;
   left: 50%;
-  top: max(18px, env(safe-area-inset-top));
-  width: max-content;
-  max-width: min(480px, calc(100% - 32px));
-  min-height: 58px;
-  padding: 10px 16px 10px 12px;
+  top: calc(72px + 12px + env(safe-area-inset-top, 0px));
+  width: min(560px, calc(100% - 24px));
+  padding: 14px 14px 14px 16px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  border: 1px solid rgb(255 255 255 / 12%);
-  border-radius: 999px;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 16px;
   color: #fff;
-  background: #22231f;
-  box-shadow: 0 18px 48px rgb(27 25 20 / 24%);
-  font-size: 13px;
-  line-height: 1.45;
+  background: #2a211b;
+  box-shadow: 0 6px 12px rgb(31 24 19 / 14%), 0 22px 48px rgb(31 24 19 / 28%);
   transform: translate(-50%, 0);
-  animation: notice-expand 420ms cubic-bezier(.2,.8,.2,1) both;
-  overflow: hidden;
   transform-origin: center top;
-  transition: opacity 420ms ease, transform 420ms cubic-bezier(.65,0,.35,1);
+  animation: notice-rise 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: opacity 260ms ease, transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .notice-indicator {
-  flex: 0 0 30px;
-  width: 30px;
-  height: 30px;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  color: #20231b;
-  background: #d8c5a2;
-  font-size: 14px;
-  font-weight: 700;
+  color: #2a211b;
+  background: #e8d7bb;
+}
+
+.notice-success .notice-indicator { background: #bfe3c8; }
+.notice-warning .notice-indicator { background: #f6c9a8; }
+
+.notice-indicator svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .notice-message {
+  flex: 1 1 200px;
   min-width: 0;
-  text-align: center;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.45;
+  text-align: left;
+  text-wrap: pretty;
 }
+
+.notice-action {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  color: #2a211b;
+  background: #f3e6cf;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.notice-action:hover { background: #fff; }
+.notice-action:active { transform: scale(0.97); }
+
+.notice-close {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  color: rgb(255 255 255 / 78%);
+  background: transparent;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.notice-close:hover { color: #fff; background: rgb(255 255 255 / 12%); }
+
+.notice-close svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.notice :focus-visible { outline: 2px solid #f3e6cf; outline-offset: 2px; }
 
 .notice-closing {
-  animation: none;
   opacity: 0;
-  transform: translate(-50%, -8px);
+  transform: translate(-50%, -10px);
+  pointer-events: none;
 }
 
-.notice button {
-  flex: 0 0 auto;
-  padding: 0 2px;
-  border: 0;
-  color: rgb(255 255 255 / 70%);
-  background: transparent;
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-@keyframes notice-expand {
-  from { opacity: 0; transform: translate(-50%, -12px) scale(.86); }
-  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+@keyframes notice-rise {
+  from { opacity: 0; transform: translate(-50%, -18px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .notice {
-    animation: none;
-    transition: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .notice-closing {
-    transition: opacity 120ms ease;
-  }
+  .notice { animation: none; transition: opacity 120ms ease; }
+  .notice-closing { transform: translate(-50%, 0); }
 }
 
 @media (max-width: 620px) {
+  .notice { top: calc(62px + 10px + env(safe-area-inset-top, 0px)); }
+}
 
-  .notice {
-    width: max-content;
-    max-width: calc(100% - 24px);
-    min-height: 44px;
-    padding: 6px 10px 6px 8px;
-    gap: 7px;
-    border-radius: 24px;
-    font-size: 12px;
-    line-height: 1.35;
-  }
-
-  .notice-indicator {
-    flex-basis: 26px;
-    width: 26px;
-    height: 26px;
-    font-size: 12px;
-  }
-
-  .notice button {
-    min-width: 24px;
-    min-height: 28px;
-    font-size: 18px;
-  }
+@media (max-width: 520px) {
+  .notice { padding: 12px; }
+  .notice-message { flex-basis: calc(100% - 100px); }
+  .notice-action { flex: 1 1 auto; }
+  .notice-close { margin-left: 0; }
 }

@@ -102,7 +102,7 @@
 
 .directory-index {
   color: #998d80;
-  font-size: 9px;
+  font-size: 13px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -117,12 +117,12 @@
 .directory-content > p {
   margin: 9px 0 16px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.6;
 }
 
 .directory-content .text-link {
-  font-size: 10px;
+  font-size: 13px;
 }
 
 @media (max-width: 900px) {
@@ -386,7 +386,7 @@
 
 .directory-index {
   color: rgb(255 255 255 / 86%);
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 0.13em;
 }
 
@@ -401,14 +401,14 @@
   max-width: 38ch;
   margin: 10px 0 17px;
   color: rgb(255 255 255 / 88%);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.65;
 }
 
 .directory-content .text-link {
   gap: 9px;
   color: #fff;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .directory-content .text-link > span[aria-hidden="true"] {
@@ -436,7 +436,7 @@
   }
 
   .directory-content > p {
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 

@@ -47,7 +47,7 @@ function parseProduct(value: unknown): PublicCatalogProduct {
     || (value.precioFinal !== null && typeof value.precioFinal !== 'number')
     || (value.descuentoPorcentaje !== null && typeof value.descuentoPorcentaje !== 'number')
     || (value.descripcion !== null && typeof value.descripcion !== 'string')) {
-    throw new Error('La API devolvió un producto con un formato inesperado.')
+    throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   }
   return {
     id: value.id,
@@ -65,7 +65,7 @@ function parseProduct(value: unknown): PublicCatalogProduct {
 
 function parsePage(value: unknown): CatalogPage {
   if (!isRecord(value) || !Array.isArray(value.content) || typeof value.totalPages !== 'number') {
-    throw new Error('La API devolvió una página de catálogo con un formato inesperado.')
+    throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   }
   return {
     content: value.content.map(parseProduct),
@@ -88,7 +88,7 @@ export async function fetchPublicCatalog(): Promise<PublicCatalogProduct[]> {
 export async function fetchPublicProductDetails(productId: string): Promise<PublicProductSpecification[]> {
   const response = await apiRequest(`/api/v1/public/catalogo/${encodeURIComponent(productId)}/detalle`)
   if (!isRecord(response) || !Array.isArray(response.especificaciones)) {
-    throw new Error('La API devolvió los detalles del producto con un formato inesperado.')
+    throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   }
   return response.especificaciones.flatMap((specification) => {
     if (!isRecord(specification)) return []
@@ -103,7 +103,7 @@ export async function fetchPublicProductDetails(productId: string): Promise<Publ
 export async function fetchPublicProductGallery(productId: string): Promise<PublicProductGalleryImage[]> {
   const response = await apiRequest(`/api/v1/public/catalogo/${encodeURIComponent(productId)}/galeria`)
   if (!Array.isArray(response)) {
-    throw new Error('La API devolvió la galería del producto con un formato inesperado.')
+    throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   }
   return response.flatMap((image) => {
     if (!isRecord(image) || typeof image.url !== 'string' || !image.url.trim()) return []

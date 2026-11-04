@@ -37,7 +37,7 @@ export default function InicioPage() {
             <h1 id="home-title">Diseño que crea <span className="cx-mark">espacios con identidad<svg viewBox="0 0 300 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9c60-8 130-8 294-2" /></svg></span></h1>
             <p className="cx-hero-text">Cerámica peruana contemporánea, hecha a mano en nuestro taller. Elige tus piezas, pide en línea y recíbelas en casa o recógelas en tienda.</p>
             <div className="cx-hero-actions">
-              <Link className="cx-btn cx-btn-ember" to="/productos">Ver productos <span aria-hidden="true">→</span></Link>
+              <Link className="cx-btn cx-btn-ember" to="/productos">Ver productos</Link>
               <Link className="cx-btn cx-btn-ghost" to="/categorias">Explorar categorías</Link>
             </div>
           </div>
@@ -79,7 +79,7 @@ export default function InicioPage() {
       <section className="cx-section cx-cats" aria-labelledby="home-categories-title">
         <div className="page-shell cx-head">
           <h2 id="home-categories-title">Categorías</h2>
-          <Link className="cx-link" to="/categorias">Ver todas <span aria-hidden="true">→</span></Link>
+          <Link className="cx-link" to="/categorias">Ver todas</Link>
         </div>
         <div className="cx-cats-stage">
           {catalogLoading || catalogError

@@ -56,14 +56,14 @@
 .ca-stub b {
   font-family: var(--serif, inherit);
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
-.ca-stub span { color: #ffe6d9; font-size: 12px; font-weight: 700; }
+.ca-stub span { color: #ffe6d9; font-size: 14px; font-weight: 600; }
 
 /* Línea de corte entre talón y cuerpo */
 .ca-body {
@@ -82,13 +82,13 @@
   color: #2a180e;
   font-family: var(--serif, inherit);
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.2;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
-.ca-message { margin: 0; color: #5d4638; font-size: 12px; line-height: 1.4; }
-.ca-terms { color: #8a6b55; font-size: 10px; line-height: 1.35; }
+.ca-message { margin: 0; color: #5d4638; font-size: 14px; line-height: 1.4; }
+.ca-terms { color: #8a6b55; font-size: 13px; line-height: 1.35; }
 
 .ca-row { margin-top: 6px; display: flex; align-items: center; flex-wrap: wrap; gap: 7px 10px; }
 
@@ -108,15 +108,15 @@
 
 .ca-code:hover { background: #ffeAD6; border-color: #e2421a; transform: translateY(-1px); }
 .ca-code:active { transform: scale(0.97); }
-.ca-code b { font-size: 13px; font-weight: 800; letter-spacing: 0.08em; }
+.ca-code b { font-size: 15px; font-weight: 600; letter-spacing: 0.08em; }
 
 .ca-code span {
   padding: 5px 8px;
   color: #fff;
   background: #e2421a;
   border-radius: 8px;
-  font-size: 10px;
-  font-weight: 800;
+  font-size: 13px;
+  font-weight: 600;
   transition: background 160ms;
 }
 
@@ -126,16 +126,16 @@
 .ca-link {
   color: #2a180e;
   border-bottom: 2px solid #e2421a;
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 15px;
+  font-weight: 600;
   text-decoration: none;
 }
 
 .ca-link span { display: inline-block; transition: transform 220ms; }
 .ca-link:hover span { transform: translateX(3px); }
-.ca-all-link { font-size: 11px; }
-.ca-hint { color: #8a6b55; font-size: 12px; }
-.ca-error { color: #b0300f; font-size: 12px; }
+.ca-all-link { font-size: 14px; }
+.ca-hint { color: #8a6b55; font-size: 14px; }
+.ca-error { color: #b0300f; font-size: 14px; }
 
 .ca-close {
   position: absolute;
@@ -190,8 +190,8 @@
   .ca-ticket { --stub: 74px; }
   .ca-stub b { font-size: 21px; }
   .ca-body { padding: 11px 34px 12px 12px; }
-  .ca-title { font-size: 14px; }
-  .ca-message { font-size: 11px; }
+  .ca-title { font-size: 15px; }
+  .ca-message { font-size: 14px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

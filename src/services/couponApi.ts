@@ -25,7 +25,7 @@ function readAnnouncement(value: unknown): CouponAnnouncement {
     || !(typeof value.venceEn === 'string' || value.venceEn === null)
     || typeof value.titulo !== 'string'
     || typeof value.mensaje !== 'string') {
-    throw new Error('La API devolvió un anuncio de cupón con formato no válido.')
+    throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   }
   return {
     codigo: value.codigo,
@@ -41,6 +41,6 @@ function readAnnouncement(value: unknown): CouponAnnouncement {
 
 export async function fetchCouponAnnouncements(): Promise<CouponAnnouncement[]> {
   const response = await apiRequest('/api/v1/public/cupones/anuncios')
-  if (!Array.isArray(response)) throw new Error('La API devolvió una lista de anuncios no válida.')
+  if (!Array.isArray(response)) throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   return response.map(readAnnouncement)
 }

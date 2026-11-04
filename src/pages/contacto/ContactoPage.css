@@ -12,7 +12,7 @@
   color: #fff;
   background: var(--olive);
   box-shadow: 0 8px 24px rgb(33 31 27 / 18%);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 650;
   text-decoration: none;
   transition: transform 160ms ease, background 160ms ease;
@@ -86,8 +86,8 @@
 
 .contact-details span {
   color: #988c7e;
-  font-size: 8px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -95,7 +95,7 @@
 .contact-details p {
   margin: 6px 0 0;
   color: #5e594f;
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.7;
 }
 
@@ -103,8 +103,8 @@
   display: inline-block;
   margin-top: 6px;
   color: var(--olive);
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   text-underline-offset: 3px;
 }
 
@@ -115,7 +115,7 @@
 .contact-footnote {
   margin-top: 14px;
   color: #8c8276;
-  font-size: 9px;
+  font-size: 13px;
   line-height: 1.6;
 }
 
@@ -145,7 +145,7 @@
   flex-direction: column;
   gap: 7px;
   color: #777168;
-  font-size: 9px;
+  font-size: 13px;
 }
 
 .contact-full-field {
@@ -162,7 +162,7 @@
   color: var(--ink);
   background: var(--paper);
   font: inherit;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .contact-fields select {
@@ -175,7 +175,7 @@
   color: var(--ink);
   background: var(--paper);
   font: inherit;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .contact-fields textarea {
@@ -188,7 +188,7 @@
   color: var(--ink);
   background: var(--paper);
   font: inherit;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .contact-fields textarea {
@@ -205,7 +205,7 @@
 .contact-form-note {
   margin: 12px 0 0;
   color: #928b80;
-  font-size: 9px;
+  font-size: 13px;
 }
 
 .contact-footer .footer-inner {
@@ -316,8 +316,8 @@
 
 .contact-help-number {
   color: #a69685;
-  font-size: 9px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   letter-spacing: 0.1em;
 }
 
@@ -331,7 +331,7 @@
 .contact-help-options p {
   margin: 6px 0 0;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
@@ -389,4 +389,91 @@
   .contact-help-panel {
     border-radius: 10px;
   }
+}
+
+/* ── Galería y CTA de producto personalizado ──────────────────────── */
+.contact-gallery {
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 12px;
+  height: clamp(180px, 28vw, 320px);
+}
+
+.contact-gallery figure {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f1e5d7, #e4cdb4);
+}
+
+.contact-gallery figure.is-missing img { visibility: hidden; }
+
+.contact-gallery img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-gallery figure:hover img { transform: scale(1.04); }
+
+.contact-gallery + .contact-layout { margin-top: 12px; }
+
+.contact-custom {
+  margin: 0 0 clamp(48px, 7vw, 84px);
+  padding: clamp(28px, 5vw, 56px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  color: #fff;
+  background-color: #3b2a20;
+  background-size: cover;
+  background-position: center;
+  border-radius: 14px;
+}
+
+.contact-custom .eyebrow { margin: 0 0 10px; color: #f3b79d; }
+
+.contact-custom h2 {
+  max-width: 520px;
+  margin: 0 0 12px;
+  font-family: var(--serif);
+  font-size: clamp(26px, 3.6vw, 38px);
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.contact-custom p:not(.eyebrow) { max-width: 520px; margin: 0; color: rgb(255 255 255 / 86%); font-size: 16px; line-height: 1.6; }
+
+.contact-custom-button {
+  flex: 0 0 auto;
+  min-height: 52px;
+  padding: 0 28px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--ink);
+  background: #fff;
+  border-radius: 99px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 160ms ease, background-color 160ms ease;
+}
+
+.contact-custom-button:hover { background: #f1e5d7; transform: translateY(-2px); text-decoration: none; }
+
+@media (max-width: 760px) {
+  .contact-gallery { grid-template-columns: 1fr 1fr; height: auto; }
+  .contact-gallery figure { aspect-ratio: 4 / 3; }
+  .contact-gallery figure:first-child { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
+  .contact-custom { flex-direction: column; align-items: flex-start; }
+  .contact-custom-button { width: 100%; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-gallery img, .contact-custom-button { transition: none; }
+  .contact-gallery figure:hover img, .contact-custom-button:hover { transform: none; }
 }

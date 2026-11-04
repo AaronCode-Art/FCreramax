@@ -1,6 +1,8 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../../context/StoreContext'
+import { cleanPersonName, cleanText, detectCardBrand, digitsOnly, formatCardNumber, formatExpiry, isValidExpiry, isValidLuhn, isValidRuc, securityCodeLength } from '../../lib/forms'
+import { ApiError } from '../../services/api'
 import { quoteCustomerCheckout, type CheckoutQuote, type CustomerCheckoutRequest } from '../../services/customerOrdersApi'
 
 export function useCheckoutPage() {
@@ -49,13 +51,13 @@ export function useCheckoutPage() {
   }
 
   function updateTestPhone(value: string) {
-    setTestPhone(value.replace(/\D/g, '').slice(0, 9))
+    setTestPhone(digitsOnly(value, 9))
     setApprovedPaymentFingerprint('')
     setPaymentNotice('')
   }
 
   function updateTestCode(value: string) {
-    setTestCode(value.replace(/\D/g, '').slice(0, 9))
+    setTestCode(digitsOnly(value, 6))
     setApprovedPaymentFingerprint('')
     setPaymentNotice('')
   }
@@ -67,25 +69,24 @@ export function useCheckoutPage() {
   }
 
   function validateTestPayment() {
-    const validMobilePayment = payment === 'TARJETA'
-      || (/^[0-9]{1,9}$/.test(testPhone) && /^[0-9]{1,9}$/.test(testCode))
-    const validCardPayment = payment !== 'TARJETA' || (
-      cardName.trim().length > 0
-      && /^[0-9]{13,19}$/.test(cardNumber)
-      && cardExpiry.trim().length > 0
-      && /^[0-9]{3,4}$/.test(cardSecurityCode)
-    )
-    if (!validMobilePayment || !validCardPayment) {
-      setApprovedPaymentFingerprint('')
-      setPaymentNotice('')
-      setError(payment === 'TARJETA'
-        ? 'Completa los datos de tarjeta correctamente.'
-        : 'Ingresa un celular y un código numéricos de hasta 9 dígitos.')
-      return
+    if (payment === 'TARJETA') {
+      const brand = detectCardBrand(cardNumber)
+      if (cardName.trim().length < 3) return rejectPayment('Escribe el nombre tal como aparece en la tarjeta.')
+      if (!isValidLuhn(cardNumber)) return rejectPayment('Revisa el número de tarjeta.')
+      if (!isValidExpiry(cardExpiry)) return rejectPayment('La fecha de vencimiento no es válida o ya venció.')
+      if (cardSecurityCode.length !== securityCodeLength(brand)) return rejectPayment(`El código de seguridad debe tener ${securityCodeLength(brand)} dígitos.`)
+    } else if (!/^9\d{8}$/.test(testPhone) || !/^\d{6}$/.test(testCode)) {
+      return rejectPayment(`Ingresa el celular de 9 dígitos de ${payment === 'YAPE' ? 'Yape' : 'Plin'} y el código de 6 dígitos.`)
     }
     setError('')
     setApprovedPaymentFingerprint(paymentFingerprint)
     setPaymentNotice(`Validación completada para ${payment === 'TARJETA' ? 'tarjeta' : payment}`)
+  }
+
+  function rejectPayment(message: string) {
+    setApprovedPaymentFingerprint('')
+    setPaymentNotice('')
+    setError(message)
   }
 
   useEffect(() => {
@@ -98,11 +99,10 @@ export function useCheckoutPage() {
     const token = localStorage.getItem('ceramax:auth-token')
     if (!token) {
       setQuote(null)
-      setQuoteError('Inicia sesión con una cuenta conectada a la API para cotizar y registrar tu pedido.')
+      setQuoteError('Inicia sesión de nuevo para cotizar y registrar tu pedido.')
       return
     }
     let active = true
-    setQuote(null)
     setQuoteError('')
     setQuoteLoading(true)
     void quoteCustomerCheckout(delivery, couponCode || null, token).then((result) => {
@@ -112,12 +112,19 @@ export function useCheckoutPage() {
         console.error('No se pudo cotizar el checkout en el servidor.', cause)
         if (couponCode && cause instanceof Error
           && cause.message.startsWith('El cupón requiere una compra mínima de S/ ')) {
-          setQuote(null)
-          setCouponInput('')
           setCouponCode('')
           setCouponNotice(`${cause.message}. Se quitó el cupón; puedes continuar con el precio normal.`)
           return
         }
+        if (couponCode && cause instanceof ApiError
+          && cause.status >= 400 && cause.status < 500
+          && cause.status !== 401 && cause.status !== 403) {
+          setCouponCode('')
+          setCouponNotice(`${cause.message}. Se quitó el cupón; se muestra el precio normal.`)
+          return
+        }
+        setQuote(null)
+        setCouponNotice('')
         setQuoteError(cause instanceof Error ? cause.message : 'No se pudo calcular el total del pedido.')
       }
     }).finally(() => {
@@ -177,8 +184,7 @@ export function useCheckoutPage() {
     return true
   }
 
-  async function completeOrder(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+  async function completeOrder() {
     if (!customer) return
     if (!quote) {
       setError(quoteError || 'Espera a que se calcule el total del pedido.')
@@ -194,8 +200,8 @@ export function useCheckoutPage() {
         return
       }
     }
-    if (receipt === 'FACTURA' && (!businessName.trim() || businessRuc.trim().length !== 11)) {
-      setError('Ingresa la razón social y un RUC de 11 dígitos para la factura.')
+    if (receipt === 'FACTURA' && (!businessName.trim() || !isValidRuc(businessRuc))) {
+      setError('Ingresa la razón social y un RUC válido de 11 dígitos para la factura.')
       return
     }
     if (approvedPaymentFingerprint !== paymentFingerprint) {
@@ -237,12 +243,11 @@ export function useCheckoutPage() {
     const code = couponInput.trim().toUpperCase()
     if (!/^[A-Z0-9_-]{3,30}$/.test(code)) {
       setQuoteError('Ingresa un código de cupón válido (3 a 30 letras o números).')
-      setQuote(null)
+      setCouponCode('')
       return
     }
     setCouponNotice('')
     setQuoteError('')
-    setQuote(null)
     setCouponCode(code)
   }
 
@@ -251,29 +256,32 @@ export function useCheckoutPage() {
     setCouponCode('')
     setCouponNotice('')
     setQuoteError('')
-    setQuote(null)
   }
 
   function updateCouponInput(value: string) {
     setCouponInput(value)
     setCouponNotice('')
+    setQuoteError('')
   }
 
   return {
-    address, addressConfirmed, businessName, businessRuc, cart, cartSubtotal,
+    address: address, setAddress: (value: string) => setAddress(cleanText(value, 200)), addressConfirmed, businessName, businessRuc, cart, cartSubtotal,
     confirmDeliveryAddress, confirmDeliveryDetails, completeOrder, customer, delivery, department,
     district, error, openAuth, payment, paymentApproved,
     paymentNotice: paymentApproved ? paymentNotice : '', phone, province, quote, quoteError, couponNotice, quoteLoading,
-    receipt, reference, saveAccountData, savingAccount, setAddress, setAddressConfirmed, setBusinessName,
-    setBusinessRuc, setCouponInput: updateCouponInput, setDelivery, setDepartment, setDistrict,
-    setError, setPhone, setProvince, setReceipt, setReference, setSaveAccountData,
+    receipt, reference, saveAccountData, savingAccount, setAddressConfirmed,
+    setBusinessName: (value: string) => setBusinessName(cleanText(value, 150)),
+    setBusinessRuc: (value: string) => setBusinessRuc(digitsOnly(value, 11)),
+    setCouponInput: updateCouponInput, setDelivery, setDepartment: (value: string) => setDepartment(cleanText(value, 60)), setDistrict: (value: string) => setDistrict(cleanText(value, 60)),
+    setError, setPhone: (value: string) => setPhone(digitsOnly(value, 9)), setProvince: (value: string) => setProvince(cleanText(value, 60)), setReceipt, setReference: (value: string) => setReference(cleanText(value, 250)), setSaveAccountData,
     setShowAddressDialog, showAddressDialog, submitting, couponInput, couponCode, applyCoupon, removeCoupon,
     testPhone, testCode, updateTestPhone, updateTestCode,
     cardName, cardNumber, cardExpiry, cardSecurityCode,
-    setCardName: (value: string) => updateCardDetails(() => setCardName(value)),
-    setCardNumber: (value: string) => updateCardDetails(() => setCardNumber(value.replace(/\D/g, '').slice(0, 19))),
-    setCardExpiry: (value: string) => updateCardDetails(() => setCardExpiry(value.replace(/[^\d/]/g, '').slice(0, 5))),
-    setCardSecurityCode: (value: string) => updateCardDetails(() => setCardSecurityCode(value.replace(/\D/g, '').slice(0, 4))),
+    setCardName: (value: string) => updateCardDetails(() => setCardName(cleanPersonName(value.toUpperCase(), 40))),
+    setCardNumber: (value: string) => updateCardDetails(() => setCardNumber(digitsOnly(value, 19))),
+    setCardExpiry: (value: string) => updateCardDetails(() => setCardExpiry((previous) => formatExpiry(value, previous))),
+    setCardSecurityCode: (value: string) => updateCardDetails(() => setCardSecurityCode(digitsOnly(value, 4))),
+    formatCardNumber,
     selectPayment, validateTestPayment,
   }
 }

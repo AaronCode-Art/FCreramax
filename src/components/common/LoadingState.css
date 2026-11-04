@@ -22,14 +22,14 @@
   color: #1f1813;
   font-family: var(--serif);
   font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .store-loading-copy p {
   margin: 4px 0 0;
   color: #7a6c60;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.5;
 }
 

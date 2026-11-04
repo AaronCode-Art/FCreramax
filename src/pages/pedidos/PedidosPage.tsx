@@ -1,18 +1,11 @@
 import './PedidosPage.css'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PageIntro } from '../../components/common/PageIntro'
+import { isProblemStatus, orderSteps, statusHelp, statusLabel, stepPosition } from '../../components/common/orderStatus'
 import type { StoreOrder } from '../../context/StoreContext'
+import { useNotifications } from '../../context/NotificationsContext'
 import { usePedidosPage } from './usePedidosPage'
-
-function statusLabel(code: string, fallback: string) {
-  const labels: Record<string, string> = {
-    PENDIENTE_PAGO: 'Pendiente de pago', PREPARACION: 'En preparación',
-    LISTO_DESPACHO: 'Listo para despacho', LISTO_PARA_RECOGER: 'Listo para recoger',
-    EN_RUTA: 'En ruta', EN_CAMINO: 'En ruta', COMPLETADA: 'Completado',
-    NO_ENTREGADA: 'No se pudo entregar', CANCELADO: 'Cancelado',
-  }
-  return labels[code] ?? fallback
-}
 
 async function downloadOrderPdf(order: StoreOrder) {
   const { jsPDF } = await import('jspdf')
@@ -264,6 +257,23 @@ async function downloadOrderPdf(order: StoreOrder) {
   pdf.save(`${order.receiptType.toLowerCase()}-${order.code}.pdf`)
 }
 
+function OrderProgress({ order }: { order: StoreOrder }) {
+  const steps = orderSteps(order.delivery)
+  const position = stepPosition(order.statusCode, order.delivery)
+  if (position < 0) {
+    return <div className={`order-status order-status-${order.statusCode.toLowerCase()}`}><span />{statusLabel(order.statusCode, order.status)}</div>
+  }
+  const label = statusLabel(order.statusCode, order.status)
+  return <div className="order-progress" role="progressbar" aria-valuemin={1} aria-valuemax={steps.length} aria-valuenow={position + 1} aria-valuetext={`Paso ${position + 1} de ${steps.length}: ${label}`}>
+    <div className="order-progress-bar" aria-hidden="true">{steps.map((step, index) => <span key={step} className={index < position ? 'is-done' : index === position ? 'is-current' : ''} />)}</div>
+    <span className="order-progress-caption" aria-hidden="true">Paso {position + 1} de {steps.length}</span>
+  </div>
+}
+
+function formatClock(date: Date) {
+  return date.toLocaleTimeString('es-PE', { hour: 'numeric', minute: '2-digit' })
+}
+
 export default function PedidosPage() {
   const {
     closeSelected,
@@ -279,26 +289,46 @@ export default function PedidosPage() {
     page,
     pages,
     query,
+    refreshNow,
     refreshOrders,
+    refreshing,
     selected,
     selectedLoading,
     setPage,
     updateQuery,
     visible,
   } = usePedidosPage(downloadOrderPdf)
+  const { unreadOrderIds, acknowledgeOrders } = useNotifications()
+  const [highlighted, setHighlighted] = useState<Set<string>>(new Set())
+  const [checkedAt, setCheckedAt] = useState(() => new Date())
+
+  // Lo nuevo queda marcado mientras la persona está en la página y se da por visto a los 4 segundos.
+  useEffect(() => {
+    if (unreadOrderIds.size) setHighlighted((current) => new Set([...current, ...unreadOrderIds]))
+  }, [unreadOrderIds])
+  useEffect(() => {
+    const timer = window.setTimeout(acknowledgeOrders, 4000)
+    return () => window.clearTimeout(timer)
+  }, [acknowledgeOrders, orders])
+  useEffect(() => { setCheckedAt(new Date()) }, [orders])
 
   if (!customer) return <section className="customer-page page-shell"><PageIntro eyebrow="Tu historial" title="Mis pedidos">Inicia sesión para consultar tus compras.</PageIntro><button className="button button-dark" type="button" onClick={() => openAuth('login')}>Iniciar sesión</button></section>
   return <section className="customer-page page-shell">
-    <PageIntro eyebrow="Tu historial" title="Mis pedidos">Busca tus pedidos por código o comprobante y consulta su seguimiento.</PageIntro>
+    <PageIntro eyebrow="Tu historial" title="Mis pedidos">Aquí ves en qué paso va cada compra. El estado se actualiza solo.</PageIntro>
     {ordersLoading ? <div className="customer-empty" role="status"><h2>Cargando tus pedidos…</h2><p>Estamos consultando el historial de tu cuenta.</p></div> : ordersError ? <div className="customer-empty"><h2>No se pudo cargar tu historial</h2><p role="alert">{ordersError}</p><button className="button button-dark" type="button" onClick={() => void refreshOrders()}>Reintentar</button></div> : !orders.length ? <div className="customer-empty"><h2>Aún no tienes pedidos</h2><p>Cuando completes una compra, aparecerá aquí su estado y comprobante.</p><Link className="button button-dark" to="/productos">Ver productos</Link></div> : <>
       {error && <p className="order-pdf-error" role="alert">{error}</p>}
+      <div className="orders-refresh">
+        <span>Última revisión: {formatClock(checkedAt)}</span>
+        <button className="button button-light" type="button" disabled={refreshing} onClick={() => void refreshNow()}>{refreshing ? 'Actualizando…' : 'Actualizar ahora'}</button>
+      </div>
       <label className="orders-search">Buscar pedido<input type="search" value={query} onChange={(event) => updateQuery(event.target.value)} placeholder="Código de pedido o comprobante" /></label>
-      {!filtered.length ? <div className="customer-empty"><h2>No encontramos pedidos</h2><p>Prueba con otro producto o número.</p></div> : <>
-        <div className="orders-list">{visible.map((order) => <article className="order-card" key={order.id}>
+      {!filtered.length ? <div className="customer-empty"><h2>No encontramos pedidos</h2><p>Prueba con otro código de pedido o número de comprobante.</p></div> : <>
+        <div className="orders-list">{visible.map((order) => <article className={`order-card${highlighted.has(order.id) ? ' is-updated' : ''}`} key={order.id}>
           <button className="order-card-button" type="button" onClick={() => void handleSelect(order)}>
-            <div className="order-card-heading"><div><span>Pedido {order.code}</span><h2>{statusLabel(order.statusCode, order.status)}</h2></div><strong>S/ {order.total.toFixed(2)}</strong></div>
+            <div className="order-card-heading"><div><span>Pedido {order.code}{highlighted.has(order.id) && <b className="order-updated-tag">Novedad</b>}</span><h2>{statusLabel(order.statusCode, order.status)}</h2></div><strong>S/ {order.total.toFixed(2)}</strong></div>
             <div className="order-meta"><span>{new Date(order.createdAt).toLocaleDateString('es-PE')}</span><span>{order.delivery === 'DELIVERY' ? 'Envío a domicilio' : 'Recojo en tienda'}</span><span>{order.receiptType === 'FACTURA' ? 'Factura' : 'Boleta'}{order.serie && order.numeroComprobante ? ` · ${order.serie}-${order.numeroComprobante}` : ''}</span></div>
-            <div className={`order-status order-status-${order.statusCode.toLowerCase()}`}><span />{statusLabel(order.statusCode, order.status)}</div>
+            <p className="order-card-help">{statusHelp(order.statusCode)}</p>
+            <OrderProgress order={order} />
             <span className="order-view-details">Ver detalle del pedido <span aria-hidden="true">›</span></span>
           </button>
           <button className="button button-light order-download-button" type="button" onClick={() => void handleDownload(order)}>Descargar {order.receiptType === 'FACTURA' ? 'factura' : 'boleta'}</button>
@@ -308,15 +338,15 @@ export default function PedidosPage() {
     </>}
     {selected && <div className="auth-modal-backdrop order-detail-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeSelected() }}><section className="order-detail-dialog" role="dialog" aria-modal="true" aria-labelledby="order-detail-title">
       <button className="dialog-close" type="button" aria-label="Cerrar detalle" onClick={closeSelected}>×</button>
-      <header className="order-detail-heading"><p className="eyebrow">Seguimiento de compra</p><h2 id="order-detail-title">Pedido {selected.code}</h2><div className={`order-status order-status-${selected.statusCode.toLowerCase()}`}><span />{statusLabel(selected.statusCode, selected.status)}</div><p>{new Date(selected.createdAt).toLocaleString('es-PE')}</p><button className="button button-dark order-detail-download" type="button" onClick={() => void handleDownload(selected)}>Descargar {selected.receiptType === 'FACTURA' ? 'factura' : 'boleta'}</button>{error && <p className="order-pdf-error" role="alert">{error}</p>}</header>
+      <header className="order-detail-heading"><p className="eyebrow">Seguimiento de compra</p><h2 id="order-detail-title">Pedido {selected.code}</h2><div className={`order-status order-status-${selected.statusCode.toLowerCase()}`}><span />{statusLabel(selected.statusCode, selected.status)}</div><p className="order-detail-help">{statusHelp(selected.statusCode)}</p><p>Pedido hecho el {new Date(selected.createdAt).toLocaleString('es-PE', { dateStyle: 'long', timeStyle: 'short' })}</p><button className="button button-dark order-detail-download" type="button" onClick={() => void handleDownload(selected)}>Descargar {selected.receiptType === 'FACTURA' ? 'factura' : 'boleta'}</button>{error && <p className="order-pdf-error" role="alert">{error}</p>}</header>
       {selectedLoading ? <div className="customer-empty" role="status"><p>Cargando detalle del pedido…</p></div> : <div className="order-detail-content">
-        <section className="order-detail-section"><h3>Estado del pedido</h3>{['PENDIENTE_PAGO', 'PREPARACION', selected.delivery === 'DELIVERY' ? 'LISTO_DESPACHO' : 'LISTO_PARA_RECOGER', ...(selected.delivery === 'DELIVERY' ? ['EN_RUTA'] : []), 'COMPLETADA'].map((step, index, steps) => {
+        <section className="order-detail-section"><h3>Estado del pedido</h3>{orderSteps(selected.delivery).map((step, index, steps) => {
           const current = selected.statusCode === 'EN_CAMINO' ? 'EN_RUTA' : selected.statusCode
           const active = Math.max(0, steps.indexOf(current))
           const terminal = ['CANCELADO', 'NO_ENTREGADA'].includes(selected.statusCode)
           const done = selected.statusCode === 'COMPLETADA' || (!terminal && index < active)
           return <div className={`order-timeline-step${done ? ' is-complete' : ''}${!terminal && (index === active || selected.statusCode === 'COMPLETADA' && index === steps.length - 1) ? ' is-current' : ''}`} key={step}><span className="order-timeline-marker">{done ? '✓' : index + 1}</span><div><strong>{statusLabel(step, step)}</strong></div></div>
-        })}{['CANCELADO', 'NO_ENTREGADA'].includes(selected.statusCode) && <div className="order-terminal-status">{statusLabel(selected.statusCode, selected.status)}</div>}</section>
+        })}{isProblemStatus(selected.statusCode) && <div className="order-terminal-status">{statusLabel(selected.statusCode, selected.status)}</div>}</section>
         <section className="order-detail-section">
           <h3>Productos</h3>
           {selected.items.map(({ product, quantity }) => (

@@ -45,7 +45,7 @@
 
 .brand-caption {
   font-size: 8px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.14em;
 }
 
@@ -70,8 +70,8 @@
   align-items: center;
   position: relative;
   color: #47443e;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 600;
   letter-spacing: 0;
   text-decoration: none;
   transition: color 160ms ease;
@@ -166,7 +166,7 @@
   color: var(--ink);
   background: transparent;
   font: inherit;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .header-search input::-webkit-search-cancel-button {
@@ -195,7 +195,7 @@
   color: #fff;
   background: var(--ink);
   font: inherit;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -278,7 +278,7 @@
 
 .header-search-suggestion-copy strong {
   overflow: hidden;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 650;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -286,12 +286,12 @@
 
 .header-search-suggestion-copy small {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .header-search-suggestion .header-search-suggestion-price {
   margin-left: auto;
-  font-size: 11px;
+  font-size: 14px;
   white-space: nowrap;
 }
 
@@ -299,7 +299,7 @@
   margin: 0;
   padding: 17px 13px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .header-search .header-search-all-results {
@@ -312,7 +312,7 @@
   color: var(--clay);
   background: #f7f2ec;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: 14px;
   text-align: left;
 }
 
@@ -355,7 +355,7 @@
   margin: 14px 0 0;
   color: #c7c0b5;
   font-family: var(--serif);
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.6;
 }
 
@@ -364,14 +364,14 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .footer-label {
   margin-bottom: 6px;
   color: #a69d91;
-  font-size: 9px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
@@ -392,7 +392,7 @@
 
 .footer-copy {
   color: #a69d91;
-  font-size: 9px;
+  font-size: 13px;
   white-space: nowrap;
 }
 
@@ -513,7 +513,7 @@
     height: 40px;
     padding-inline: 5px;
     justify-content: center;
-    font-size: 11px;
+    font-size: 14px;
     white-space: nowrap;
   }
 }
@@ -601,7 +601,7 @@
 
   .header-search input {
     padding-inline: 2px;
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 
@@ -609,7 +609,7 @@
 
   .header-search > button[type="submit"] {
     padding: 9px 11px;
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 
@@ -647,21 +647,21 @@
 @media (max-width: 620px) {
 
   .header-search-suggestion-copy strong {
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 
 @media (max-width: 620px) {
 
   .header-search-suggestion-copy small {
-    font-size: 9px;
+    font-size: 13px;
   }
 }
 
 @media (max-width: 620px) {
 
   .header-search-suggestion .header-search-suggestion-price {
-    font-size: 9px;
+    font-size: 13px;
   }
 }
 
@@ -669,7 +669,7 @@
 
   .header-search .header-search-all-results {
     padding: 11px 9px;
-    font-size: 10px;
+    font-size: 13px;
   }
 }
 
@@ -758,8 +758,8 @@
   display: block;
   padding: 3px 7px 11px;
   color: var(--muted);
-  font-size: 9px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -772,7 +772,7 @@
   justify-content: space-between;
   border-top: 1px solid #f0ece6;
   color: var(--ink);
-  font-size: 12px;
+  font-size: 14px;
   text-decoration: none;
 }
 
@@ -792,7 +792,7 @@
 .category-dropdown-menu .dropdown-all {
   margin-top: 5px;
   color: var(--clay);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 650;
 }
 
@@ -897,7 +897,7 @@
   border: 2px solid var(--paper);
   border-radius: 999px;
   font-size: 9px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
 }
 
@@ -1038,7 +1038,7 @@
     justify-content: space-between;
     color: var(--ink);
     border-bottom: 1px solid #eee7df;
-    font-size: 13px;
+    font-size: 15px;
     text-align: left;
   }
 }
@@ -1054,7 +1054,7 @@
     justify-content: space-between;
     color: var(--ink);
     border-bottom: 1px solid #eee7df;
-    font-size: 13px;
+    font-size: 15px;
     text-align: left;
   }
 }
@@ -1227,7 +1227,7 @@
 
 .site-footer .footer-column > span:not(.footer-label) {
   color: #eee9e0;
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.65;
 }
 
@@ -1255,7 +1255,7 @@
   color: var(--ink);
   border-bottom: 1px solid var(--line);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.4;
 }
 

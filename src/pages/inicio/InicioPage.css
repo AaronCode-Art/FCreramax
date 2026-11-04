@@ -25,7 +25,7 @@
   color: var(--ink);
   font-family: var(--serif);
   font-weight: 400;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.01em;
 }
 
 .section-heading h2 {
@@ -33,7 +33,7 @@
   color: var(--ink);
   font-family: var(--serif);
   font-weight: 400;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.01em;
 }
 
 .craft-copy h2 {
@@ -41,7 +41,7 @@
   color: var(--ink);
   font-family: var(--serif);
   font-weight: 400;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.01em;
 }
 
 .hero-copy h1 {
@@ -60,7 +60,7 @@
   max-width: 390px;
   margin: 25px 0 0;
   color: #777168;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.8;
 }
 
@@ -87,7 +87,7 @@
   gap: 10px;
   margin-top: 42px;
   color: #8c8479;
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 0.04em;
 }
 
@@ -160,8 +160,8 @@
 
 .collection-label span {
   color: #898177;
-  font-size: 8px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -177,7 +177,7 @@
   left: 20px;
   bottom: 21px;
   color: #fff;
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 0.12em;
 }
 
@@ -245,7 +245,7 @@
   top: 17px;
   left: 17px;
   color: rgb(255 255 255 / 90%);
-  font-size: 9px;
+  font-size: 13px;
   letter-spacing: 0.1em;
 }
 
@@ -259,7 +259,7 @@
 
 .category-copy > span {
   color: rgb(255 255 255 / 79%);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .category-copy h3 {
@@ -329,7 +329,7 @@
 .craft-copy > p:not(.eyebrow) {
   margin: 20px 0 23px;
   color: #777168;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.85;
 }
 
@@ -402,7 +402,7 @@
 
   .hero-description {
     margin-top: 18px;
-    font-size: 13px;
+    font-size: 15px;
   }
 }
 
@@ -503,7 +503,7 @@
 @media (max-width: 620px) {
 
   .category-copy > span {
-    font-size: 8px;
+    font-size: 13px;
   }
 }
 
@@ -555,7 +555,7 @@
 @media (max-width: 620px) {
 
   .craft-copy > p:not(.eyebrow) {
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 
@@ -728,13 +728,13 @@
 
 .category-copy > span {
   color: rgb(255 255 255 / 85%);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .category-copy h3 {
   margin-top: 8px;
   font-size: clamp(27px, 2.5vw, 34px);
-  letter-spacing: -0.025em;
+  letter-spacing: -0.01em;
 }
 
 .category-number {

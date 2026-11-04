@@ -100,7 +100,7 @@ export default function CuponesPage() {
       </PageIntro>
       {!customer && <div className="coupons-account-note">
         <span>Inicia sesión para consultar cuántos usos personales te quedan.</span>
-        <button className="text-link" type="button" onClick={() => openAuth('login')}>Iniciar sesión <span aria-hidden="true">→</span></button>
+        <button className="text-link" type="button" onClick={() => openAuth('login')}>Iniciar sesión</button>
       </div>}
       {usageError && <p className="coupons-error" role="alert">{usageError}</p>}
       {couponsError && <p className="coupons-error" role="alert">{couponsError}</p>}

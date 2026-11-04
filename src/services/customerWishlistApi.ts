@@ -2,7 +2,7 @@ import { apiRequest } from './api'
 
 function readWishlist(value: unknown): string[] {
   if (!Array.isArray(value) || !value.every((productId) => typeof productId === 'string')) {
-    throw new Error('La API devolvió una lista de deseos no válida.')
+    throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   }
   return value
 }

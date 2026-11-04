@@ -27,12 +27,12 @@
   padding: 22px;
   background: #fff;
   border: 1px dashed var(--line);
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .local-receipt h3 {
   margin: 0;
-  font-size: 14px;
+  font-size: 15px;
   letter-spacing: 0.08em;
 }
 
@@ -47,7 +47,7 @@
 .local-receipt .receipt-total {
   margin-top: 6px;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .local-receipt p {
@@ -77,9 +77,9 @@
 .eyebrow {
   margin: 0 0 18px;
   color: var(--clay);
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.4;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
@@ -93,7 +93,7 @@
   justify-content: center;
   gap: 10px;
   border-radius: 99px;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 650;
   text-decoration: none;
   box-shadow: 0 0 0 rgb(41 39 34 / 0%);
@@ -187,7 +187,7 @@
   align-items: center;
   gap: 8px;
   color: #8e4c35;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 650;
   text-decoration: none;
   white-space: nowrap;
@@ -216,7 +216,7 @@
 @media (max-width: 620px) {
 
   .eyebrow {
-    font-size: 9px;
+    font-size: 13px;
   }
 }
 
@@ -225,7 +225,7 @@
   .button {
     min-height: 40px;
     padding-inline: 15px;
-    font-size: 10px;
+    font-size: 13px;
   }
 }
 
@@ -243,7 +243,7 @@
   font-family: var(--serif);
   font-size: clamp(44px, 6vw, 72px);
   font-weight: 400;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.01em;
   line-height: 1.02;
 }
 
@@ -252,7 +252,7 @@
   font-family: var(--serif);
   font-size: clamp(44px, 6vw, 72px);
   font-weight: 400;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.01em;
   line-height: 1.02;
 }
 
@@ -260,7 +260,7 @@
   max-width: 570px;
   margin: 17px 0 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.8;
 }
 
@@ -314,7 +314,7 @@
 
   .page-intro > p:last-child {
     margin-top: 12px;
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 
@@ -333,7 +333,7 @@
   font-family: var(--serif);
   font-size: clamp(42px, 5vw, 64px);
   font-weight: 400;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.01em;
   line-height: 1.05;
 }
 
@@ -341,7 +341,7 @@
   max-width: 520px;
   margin: 16px 0 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.75;
 }
 
@@ -363,7 +363,7 @@
   display: grid;
   gap: 7px;
   color: #5f5a51;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 650;
 }
 
@@ -376,20 +376,20 @@
   border: 1px solid var(--line);
   border-radius: 3px;
   font: inherit;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .customer-form-note {
   margin: 0;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
 .cart-summary p {
   margin: 0;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
@@ -399,13 +399,13 @@
   background: #fff0ed;
   border: 1px solid #e8c5bf;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
 .customer-loading {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .customer-empty {
@@ -432,7 +432,7 @@
 .customer-empty p {
   margin: 10px 0 21px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .text-button {
@@ -440,7 +440,7 @@
   background: transparent;
   border: 0;
   font: inherit;
-  font-size: 11px;
+  font-size: 14px;
   cursor: pointer;
 }
 
@@ -454,7 +454,7 @@
   justify-content: space-between;
   gap: 12px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .cart-summary > div strong {
@@ -634,14 +634,14 @@
 
 .page-intro h1 {
   font-size: clamp(36px, 5vw, 58px);
-  letter-spacing: -0.035em;
+  letter-spacing: -0.01em;
   line-height: 1.04;
   text-wrap: balance;
 }
 
 .page-intro > p:last-child {
   max-width: 64ch;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.75;
 }
 
@@ -700,7 +700,7 @@
 @media (max-width: 620px) {
 
   .page-intro > p:last-child {
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 

@@ -203,6 +203,18 @@ const categoryPresets: Pick<StoreCategory, 'name' | 'note'>[] = [
   { name: 'Decoración', note: 'Objetos que guardan memoria' },
 ]
 
+export type NoticeTone = 'success' | 'info' | 'warning'
+export type NoticeAction = { label: string; to?: string; onClick?: () => void }
+export type NoticeOptions = { action?: NoticeAction; tone?: NoticeTone; duration?: number }
+type NoticeState = { id: number; message: string; tone: NoticeTone; action: NoticeAction | null; duration: number }
+
+const DEFAULT_NOTICE_MS = 15000
+const ACTION_NOTICE_MS = 15000
+const ORDERS_POLL_MS = 60 * 1000
+const inferTone = (message: string): NoticeTone => (
+  /no se pudo|venci|incorrect|error|no hay|ya existe/i.test(message) ? 'warning' : 'info'
+)
+
 type StoreContextValue = {
   products: StoreProduct[]
   categories: StoreCategory[]
@@ -222,7 +234,9 @@ type StoreContextValue = {
   authOpen: boolean
   authMode: 'login' | 'register'
   notice: string
+  noticeState: NoticeState
   setNotice: (message: string) => void
+  notify: (message: string, options?: NoticeOptions) => void
   openAuth: (mode?: 'login' | 'register') => void
   closeAuth: () => void
   login: (email: string, password: string) => string | null
@@ -231,9 +245,14 @@ type StoreContextValue = {
   logout: () => void
   updateCustomer: (customer: StoreCustomer) => void
   updateCustomerDeliveryData: (customer: StoreCustomer) => Promise<void>
-  addToCart: (product: StoreProduct, quantity?: number) => void
+  addToCart: (product: StoreProduct, quantity?: number, options?: { silent?: boolean }) => void
+  cartAddedProduct: StoreProduct | null
+  dismissCartAdded: () => void
+  favoriteRemoval: StoreProduct | null
+  cancelFavoriteRemoval: () => void
+  confirmFavoriteRemoval: () => void
   setCartQuantity: (slug: string, quantity: number) => void
-  removeFromCart: (slug: string) => void
+  removeFromCart: (slug: string) => Promise<boolean>
   clearCart: () => void
   toggleFavorite: (product: StoreProduct) => void
   refreshOrders: (silent?: boolean) => Promise<void>
@@ -351,7 +370,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [reviews, setReviews] = useState<StoreReview[]>(() => read('ceramax:reviews', []))
   const [authOpen, setAuthOpen] = useState(false)
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
-  const [notice, setNotice] = useState('')
+  const [cartAddedProduct, setCartAddedProduct] = useState<StoreProduct | null>(null)
+  const [favoriteRemoval, setFavoriteRemoval] = useState<StoreProduct | null>(null)
+  const [noticeState, setNoticeState] = useState<NoticeState>({ id: 0, message: '', tone: 'info', action: null, duration: DEFAULT_NOTICE_MS })
+  const notice = noticeState.message
+  const setNotice = useCallback((message: string) => {
+    setNoticeState({ id: Date.now(), message, tone: inferTone(message), action: null, duration: DEFAULT_NOTICE_MS })
+  }, [])
+  const notify = useCallback((message: string, options: NoticeOptions = {}) => {
+    setNoticeState({
+      id: Date.now(),
+      message,
+      tone: options.tone ?? inferTone(message),
+      action: options.action ?? null,
+      duration: options.duration ?? (options.action ? ACTION_NOTICE_MS : DEFAULT_NOTICE_MS),
+    })
+  }, [])
   const openAuth = useCallback((mode: 'login' | 'register' = 'login') => {
     setAuthMode(mode)
     setAuthOpen(true)
@@ -533,14 +567,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       }).catch((error: unknown) => {
         if (!active || (error instanceof ApiError && error.status === 401)) return
         console.error('No se pudo recuperar el carrito del cliente.', error)
-        setNotice(error instanceof Error ? error.message : 'No se pudo cargar el carrito desde la API.')
+        setNotice(error instanceof Error ? error.message : 'No se cargaron los datos. Inténtalo de nuevo.')
       })
       void fetchCustomerWishlist(token).then((productIds) => {
         if (active) setFavorites(products.filter((product) => productIds.includes(product.id)).map((product) => product.slug))
       }).catch((error: unknown) => {
         if (!active || (error instanceof ApiError && error.status === 401)) return
         console.error('No se pudo recuperar la lista de deseos del cliente.', error)
-        setNotice(error instanceof Error ? error.message : 'No se pudo cargar la lista de deseos desde la API.')
+        setNotice(error instanceof Error ? error.message : 'No se cargaron los datos. Inténtalo de nuevo.')
       })
       setOrdersLoading(true)
       setOrdersError('')
@@ -581,13 +615,27 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error('No se pudo actualizar el historial de pedidos del cliente.', error)
       const message = error instanceof Error ? error.message : 'No se pudo cargar el historial de pedidos.'
-      setOrdersError(message)
+      if (!silent) setOrdersError(message)
       throw error
     } finally {
       ordersRefreshInProgress.current = false
       if (!silent) setOrdersLoading(false)
     }
   }, [customer])
+
+  // El estado del pedido cambia en el taller: se consulta solo, sin que el cliente haga nada.
+  useEffect(() => {
+    if (!customer || !localStorage.getItem(sessionTokenKey)) return
+    const checkOrders = () => {
+      if (document.visibilityState === 'visible') void refreshOrders(true).catch(() => undefined)
+    }
+    const interval = window.setInterval(checkOrders, ORDERS_POLL_MS)
+    document.addEventListener('visibilitychange', checkOrders)
+    return () => {
+      window.clearInterval(interval)
+      document.removeEventListener('visibilitychange', checkOrders)
+    }
+  }, [customer, refreshOrders])
 
   const loadOrderDetails = useCallback(async (orderId: string) => {
     const token = localStorage.getItem(sessionTokenKey)
@@ -602,9 +650,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const order = mapOrderDetail(created, customer, products)
     setOrders((current) => [order, ...current.filter((item) => item.id !== order.id)])
     setCart([])
-    setNotice(`Pedido ${order.code} registrado correctamente. Puedes consultar su estado en Mis pedidos.`)
+    notify(`¡Listo! Registramos tu pedido ${order.code}. Te avisaremos aquí cada vez que cambie de estado.`, {
+      tone: 'success',
+      action: { label: 'Ver mi pedido', to: '/pedidos' },
+    })
     return order
-  }, [customer, products])
+  }, [customer, products, notify])
 
   const persist = (key: string, value: unknown) => {
     try {
@@ -619,7 +670,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<StoreContextValue>(() => ({
     products, categories, catalogLoading, catalogError, catalogWarning, refreshCatalog, loadProductGallery,
-    customer, cart, favorites, orders, ordersLoading, ordersError, reviews, accounts, authOpen, authMode, notice, setNotice,
+    customer, cart, favorites, orders, ordersLoading, ordersError, reviews, accounts, authOpen, authMode, notice, noticeState, setNotice, notify,
     openAuth,
     closeAuth: () => setAuthOpen(false),
     login: (email, password) => {
@@ -659,7 +710,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem(sessionProfileKey)
       localStorage.removeItem('ceramax:current-email')
       setCustomer(null)
-      setNotice('Se cerró tu sesión.')
+      notify('Cerraste sesión. Tus productos y pedidos siguen guardados en tu cuenta.', {
+        action: { label: 'Volver a entrar', onClick: () => { setAuthMode('login'); setAuthOpen(true) } },
+      })
     },
     updateCustomer: (profile) => {
       const updated = accounts.map((account) => account.email.toLowerCase() === profile.email.toLowerCase() ? { ...account, ...profile } : account)
@@ -681,13 +734,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       if (token) localStorage.setItem(sessionProfileKey, JSON.stringify(savedProfile))
       setCustomer(savedProfile)
     },
-    addToCart: (product, quantity = 1) => {
+    addToCart: (product, quantity = 1, options) => {
       if (!customer) { setAuthMode('login'); setAuthOpen(true); return }
       const token = localStorage.getItem(sessionTokenKey)
       if (token) {
         void addCustomerCartItem(product.id, quantity, token).then((items) => {
           setCart(mapCustomerCart(items, products))
-          setNotice(`${product.name} se agregó a tu carrito.`)
+          if (options?.silent) notify(`${product.name} volvió a tu carrito.`, { tone: 'success' })
+          else setCartAddedProduct(product)
         }).catch((error: unknown) => {
           console.error('No se pudo agregar el producto al carrito de la API.', error)
           setNotice(error instanceof Error ? error.message : 'No se pudo agregar el producto al carrito.')
@@ -699,7 +753,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         : [...cart, { product, quantity: Math.min(product.stock, quantity) }]
       if (persist(customerKey(customer.email, 'cart'), next)) {
         setCart(next)
-        setNotice(`${product.name} se agregó a tu carrito.`)
+        if (options?.silent) notify(`${product.name} volvió a tu carrito.`, { tone: 'success' })
+          else setCartAddedProduct(product)
       }
     },
     setCartQuantity: (slug, quantity) => {
@@ -718,21 +773,25 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const next = cart.map((line) => line.product.slug === slug ? { ...line, quantity: Math.max(1, Math.min(line.product.stock, quantity)) } : line)
       if (persist(customerKey(customer.email, 'cart'), next)) setCart(next)
     },
-    removeFromCart: (slug) => {
-      if (!customer) return
+    removeFromCart: async (slug) => {
+      if (!customer) return false
       const token = localStorage.getItem(sessionTokenKey)
       const line = cart.find((item) => item.product.slug === slug)
       if (token && line) {
-        void removeCustomerCartItem(line.product.id, token).then((items) => {
+        try {
+          const items = await removeCustomerCartItem(line.product.id, token)
           setCart(mapCustomerCart(items, products))
-        }).catch((error: unknown) => {
+          return true
+        } catch (error: unknown) {
           console.error('No se pudo eliminar el producto del carrito de la API.', error)
           setNotice(error instanceof Error ? error.message : 'No se pudo eliminar el producto del carrito.')
-        })
-        return
+          return false
+        }
       }
       const next = cart.filter((line) => line.product.slug !== slug)
-      if (persist(customerKey(customer.email, 'cart'), next)) setCart(next)
+      if (!persist(customerKey(customer.email, 'cart'), next)) return false
+      setCart(next)
+      return true
     },
     clearCart: () => {
       if (!customer) return
@@ -749,6 +808,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     toggleFavorite: (product) => {
       if (!customer) { setAuthMode('login'); setAuthOpen(true); return }
       const exists = favorites.includes(product.slug)
+      if (exists) { setFavoriteRemoval(product); return }
       const token = localStorage.getItem(sessionTokenKey)
       if (token) {
         const updateWishlist = exists
@@ -769,6 +829,31 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         setNotice(exists ? 'Se quitó de tu lista de deseos.' : 'Se agregó a tu lista de deseos.')
       }
     },
+    cartAddedProduct,
+    dismissCartAdded: () => setCartAddedProduct(null),
+    favoriteRemoval,
+    cancelFavoriteRemoval: () => setFavoriteRemoval(null),
+    confirmFavoriteRemoval: () => {
+      const product = favoriteRemoval
+      setFavoriteRemoval(null)
+      if (!product || !customer) return
+      const token = localStorage.getItem(sessionTokenKey)
+      if (token) {
+        void removeCustomerWishlistItem(product.id, token).then((productIds) => {
+          setFavorites(products.filter((item) => productIds.includes(item.id)).map((item) => item.slug))
+          setNotice('Se quitó de tu lista de deseos.')
+        }).catch((error: unknown) => {
+          console.error('No se pudo quitar el producto de la lista de deseos.', error)
+          setNotice(error instanceof Error ? error.message : 'No se pudo quitar de la lista de deseos.')
+        })
+        return
+      }
+      const next = favorites.filter((slug) => slug !== product.slug)
+      if (persist(customerKey(customer.email, 'favorites'), next)) {
+        setFavorites(next)
+        setNotice('Se quitó de tu lista de deseos.')
+      }
+    },
     refreshOrders,
     loadOrderDetails,
     createCustomerOrder: submitCustomerOrder,
@@ -776,7 +861,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const next = [review, ...reviews]
       if (persist('ceramax:reviews', next)) setReviews(next)
     },
-  }), [products, categories, catalogLoading, catalogError, catalogWarning, refreshCatalog, loadProductGallery, customer, cart, favorites, orders, ordersLoading, ordersError, reviews, accounts, authOpen, authMode, notice, openAuth, refreshOrders, loadOrderDetails, submitCustomerOrder])
+  }), [products, categories, catalogLoading, catalogError, catalogWarning, refreshCatalog, loadProductGallery, customer, cart, favorites, orders, ordersLoading, ordersError, reviews, accounts, authOpen, authMode, notice, noticeState, setNotice, notify, cartAddedProduct, favoriteRemoval, openAuth, refreshOrders, loadOrderDetails, submitCustomerOrder])
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }

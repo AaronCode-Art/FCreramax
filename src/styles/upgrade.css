@@ -51,7 +51,7 @@ select:focus-visible {
 .storefront .brand-caption {
   font-family: var(--serif);
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.14em;
 }
 
@@ -78,7 +78,7 @@ select:focus-visible {
   color: #fff;
   background: #e2421a;
   box-shadow: 0 0 0 2px #fbf6ee;
-  font-weight: 800;
+  font-weight: 600;
   animation: up-pop 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -99,8 +99,8 @@ select:focus-visible {
 
 .storefront .page-intro h1 {
   font-family: var(--serif);
-  font-weight: 800;
-  letter-spacing: -0.045em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .storefront .products-hero-overlay,
@@ -126,8 +126,8 @@ select:focus-visible {
   background: #fff;
   border: 1.5px solid #e7d6c3;
   border-radius: 99px;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 600;
   transition: transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1), background 160ms, color 160ms, border-color 160ms;
 }
 
@@ -145,7 +145,7 @@ select:focus-visible {
 .storefront .product-count {
   color: #7a6c60;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .storefront .catalog-sidebar {
@@ -161,7 +161,7 @@ select:focus-visible {
 
 .storefront .catalog-sidebar-heading button {
   color: #c9522b;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 /* Vista rápida */
@@ -177,8 +177,8 @@ select:focus-visible {
 
 .storefront .quick-view-content h2 {
   font-family: var(--serif);
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .storefront .quick-view-image-wrap {
@@ -189,8 +189,8 @@ select:focus-visible {
 .storefront .button {
   min-height: 46px;
   padding: 0 22px;
-  font-size: 14px;
-  font-weight: 800;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .storefront .button-dark {
@@ -216,7 +216,7 @@ select:focus-visible {
 
 /* Pedidos */
 .storefront .orders-search {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .storefront .orders-search input {
@@ -267,16 +267,16 @@ select:focus-visible {
 
 .storefront .order-card-heading h2 {
   font-family: var(--serif);
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .storefront .order-card-heading>strong {
   color: #1f1813;
   font-family: var(--serif);
   font-size: 24px;
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -289,8 +289,8 @@ select:focus-visible {
   color: #7a4a0a;
   background: #fff1d6;
   border-radius: 99px;
-  font-size: 12.5px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .storefront .order-status>span {
@@ -336,7 +336,7 @@ select:focus-visible {
 
 .storefront .order-view-details {
   color: #c9522b;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .storefront .order-detail-dialog {
@@ -346,8 +346,8 @@ select:focus-visible {
 
 .storefront .order-detail-heading h2 {
   font-family: var(--serif);
-  font-weight: 800;
-  letter-spacing: -0.035em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .storefront .order-timeline-step {
@@ -380,8 +380,8 @@ select:focus-visible {
 
 .storefront .customer-empty h2 {
   font-family: var(--serif);
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 /* Pie */

@@ -7,7 +7,7 @@
 
 .order-card-heading > div > span {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -49,13 +49,13 @@
   flex-wrap: wrap;
   gap: 10px 22px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .order-delivery {
   margin: 0;
   color: #5f5a51;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .order-card .button {
@@ -149,7 +149,7 @@
   display: grid;
   gap: 8px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 650;
 }
 
@@ -170,7 +170,7 @@
   justify-content: center;
   gap: 18px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .orders-pagination button {
@@ -218,7 +218,7 @@
 .order-pdf-error {
   margin: 0 0 14px;
   color: #9c3328;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .order-view-details {
@@ -226,7 +226,7 @@
   align-items: center;
   justify-content: space-between;
   color: var(--clay);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 650;
 }
 
@@ -265,7 +265,7 @@
 .order-detail-heading > p:last-child {
   margin: 12px 0 0;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .order-detail-content {
@@ -290,7 +290,7 @@
 .order-detail-section > p {
   margin: 7px 0 0;
   color: #625e56;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
@@ -327,12 +327,12 @@
 .order-timeline-step > div {
   display: grid;
   gap: 3px;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .order-timeline-step small {
   color: var(--clay);
-  font-size: 9px;
+  font-size: 13px;
 }
 
 .order-timeline-step.is-complete {
@@ -350,7 +350,7 @@
   padding: 10px 12px;
   color: #8d362e;
   background: #fff0ed;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .order-detail-product {
@@ -376,21 +376,21 @@
 }
 
 .order-detail-product strong {
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .order-detail-total strong {
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .order-detail-product span {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .order-detail-total span {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .order-detail-total {
@@ -408,7 +408,7 @@
 
   .orders-pagination {
     gap: 9px;
-    font-size: 10px;
+    font-size: 13px;
   }
 }
 
@@ -442,7 +442,7 @@
   color: #635d55;
   background: #f3eee7;
   border-radius: 99px;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 650;
 }
 
@@ -538,3 +538,82 @@
     transform: none;
   }
 }
+
+/* ===== Seguimiento claro: qué pasa ahora y cuántos pasos faltan ===== */
+.orders-refresh {
+  margin: 0 0 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  color: #4f443b;
+  font-size: 15px;
+}
+
+.orders-refresh .button { min-height: 44px; }
+
+.orders-search { font-size: 16px; }
+.orders-search input { min-height: 48px; font-size: 16px; }
+
+.order-card.is-updated {
+  border-color: #e2421a;
+  box-shadow: 0 0 0 3px rgb(226 66 26 / 14%);
+}
+
+.order-updated-tag {
+  margin-left: 10px;
+  padding: 3px 10px;
+  color: #fff;
+  background: #e2421a;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  vertical-align: 1px;
+}
+
+.order-card-help {
+  max-width: 62ch;
+  margin: 10px 0 14px;
+  color: #3f352d;
+  font-size: 16px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.order-progress { display: grid; gap: 8px; margin-bottom: 14px; }
+
+.order-progress-bar {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
+}
+
+.order-progress-bar span {
+  height: 10px;
+  background: #e8ddd0;
+  border-radius: 99px;
+}
+
+.order-progress-bar span.is-done { background: #668652; }
+.order-progress-bar span.is-current { background: #c9522b; }
+
+.order-progress-caption {
+  color: #4f443b;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.order-detail-help {
+  max-width: 60ch;
+  margin: 10px 0 4px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #3f352d;
+}
+
+.order-view-details { font-size: 16px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.order-download-button { min-height: 48px; font-size: 16px; }

@@ -85,6 +85,12 @@ export function CouponAnnouncer() {
     return () => window.clearTimeout(timer)
   }, [pathname, coupons])
 
+  useEffect(() => {
+    if (!shown) return
+    const timer = window.setTimeout(hide, 15000)
+    return () => window.clearTimeout(timer)
+  }, [shown])
+
   useEffect(() => () => { window.clearTimeout(exitTimer.current); window.clearTimeout(copyTimer.current) }, [])
 
   async function copyCode() {
@@ -140,7 +146,7 @@ export function CouponAnnouncer() {
             </button>
             {inCheckout
               ? <span className="ca-hint">Pégalo en “Código de cupón”</span>
-              : <Link className="ca-link" to={inCart ? '/checkout' : '/carrito'}>{inCart ? 'Ir a pagar' : 'Ver carrito'} <span aria-hidden="true">→</span></Link>}
+              : <Link className="ca-link" to={inCart ? '/checkout' : '/carrito'}>{inCart ? 'Ir a pagar' : 'Ver carrito'}</Link>}
             <Link className="ca-link ca-all-link" to="/cupones">Ver cupones</Link>
           </div>
           {copyError && <small className="ca-error" role="alert">Copia el código manualmente para usarlo al pagar.</small>}

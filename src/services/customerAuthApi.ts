@@ -38,7 +38,7 @@ function readProfile(value: unknown): CustomerProfile {
     || typeof value.tipoDocumento !== 'string'
     || !['DNI', 'RUC', 'CE', 'PASAPORTE'].includes(value.tipoDocumento)
     || typeof value.numeroDocumento !== 'string') {
-    throw new Error('La API devolvió datos de cliente incompletos o no válidos.')
+    throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   }
   const optionalText = (field: string): string => {
     const fieldValue = value[field]
@@ -68,7 +68,7 @@ function readAuthResponse(value: unknown): AuthResponse {
     || typeof value.email !== 'string'
     || typeof value.nombres !== 'string'
     || typeof value.apellidos !== 'string') {
-    throw new Error('La API devolvió una respuesta de inicio de sesión no válida.')
+    throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   }
   return {
     token: value.token,

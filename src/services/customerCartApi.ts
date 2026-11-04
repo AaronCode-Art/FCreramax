@@ -23,12 +23,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function readCart(value: unknown): CustomerCartItem[] {
   if (!Array.isArray(value)) {
-    throw new Error('La API devolvió un carrito no válido.')
+    throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   }
 
   return value.map((item): CustomerCartItem => {
     if (!isRecord(item) || !isRecord(item.product)) {
-      throw new Error('La API devolvió un producto del carrito no válido.')
+      throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
     }
     const product = item.product
     if (typeof product.id !== 'string'
@@ -41,7 +41,7 @@ function readCart(value: unknown): CustomerCartItem[] {
       || (product.descuentoPorcentaje !== null && typeof product.descuentoPorcentaje !== 'number')
       || typeof product.stockDisponible !== 'number'
       || typeof item.quantity !== 'number') {
-      throw new Error('La API devolvió datos incompletos del carrito.')
+      throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
     }
     return {
       product: {

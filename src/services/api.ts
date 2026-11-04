@@ -31,7 +31,7 @@ export async function apiRequest(
   token?: string,
 ): Promise<unknown> {
   if (!API_BASE_URL) {
-    throw new ApiError("La API no está configurada. Define VITE_API_URL en el entorno del frontend.", 0);
+    throw new ApiError("No se cargaron los datos. Inténtalo de nuevo.", 0);
   }
 
   const headers = new Headers(options.headers);
@@ -55,7 +55,7 @@ export async function apiRequest(
       throw new ApiError("La solicitud tardó demasiado. Inténtalo nuevamente.", 0);
     }
     if (error instanceof TypeError) {
-      throw new ApiError("No se pudo conectar con la API. Verifica que el backend esté disponible.", 0);
+      throw new ApiError("No se cargaron los datos. Inténtalo de nuevo.", 0);
     }
     throw error;
   } finally {
@@ -68,7 +68,7 @@ export async function apiRequest(
     try {
       body = JSON.parse(responseText) as unknown;
     } catch {
-      if (response.ok) throw new ApiError("La API devolvió una respuesta no válida.", response.status);
+      if (response.ok) throw new ApiError("No se cargaron los datos. Inténtalo de nuevo.", response.status);
     }
   }
 
@@ -91,7 +91,7 @@ export async function apiDownload(
   token: string,
 ): Promise<{ blob: Blob; filename: string }> {
   if (!API_BASE_URL) {
-    throw new ApiError("La API no está configurada. Define VITE_API_URL en el entorno del frontend.", 0);
+    throw new ApiError("No se cargaron los datos. Inténtalo de nuevo.", 0);
   }
 
   const controller = new AbortController();
@@ -110,7 +110,7 @@ export async function apiDownload(
       throw new ApiError("La solicitud tardó demasiado. Inténtalo nuevamente.", 0);
     }
     if (error instanceof TypeError) {
-      throw new ApiError("No se pudo conectar con la API. Verifica que el backend esté disponible.", 0);
+      throw new ApiError("No se cargaron los datos. Inténtalo de nuevo.", 0);
     }
     throw error;
   } finally {

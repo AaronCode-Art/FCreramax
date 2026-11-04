@@ -33,7 +33,7 @@
 .auth-modal-description {
   margin: 12px 0 23px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.6;
 }
 
@@ -52,13 +52,13 @@
   border-bottom: 2px solid transparent;
   cursor: pointer;
   font: inherit;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .auth-modal-tabs .auth-tab-active {
   color: var(--ink);
   border-bottom-color: var(--clay);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .auth-form {
@@ -73,7 +73,7 @@
   border: 0;
   cursor: pointer;
   font: inherit;
-  font-size: 13px;
+  font-size: 15px;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -157,20 +157,20 @@
 }
 
 .auth-brand-lockup small {
-  font-size: 9px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   letter-spacing: 0.15em;
 }
 
 .auth-art-copy > span {
-  font-size: 9px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   letter-spacing: 0.15em;
 }
 
 .auth-art-index {
-  font-size: 9px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   letter-spacing: 0.15em;
 }
 
@@ -193,7 +193,7 @@
 .auth-art-copy p {
   margin: 0;
   color: rgb(255 250 242 / 80%);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
 }
 
@@ -238,7 +238,7 @@
   min-height: 39px;
   border: 0;
   border-radius: 3px;
-  font-size: 12px;
+  font-size: 14px;
   transition: color 150ms ease, background 150ms ease, box-shadow 150ms ease;
 }
 
@@ -265,14 +265,14 @@
 .auth-modal .auth-form > label {
   gap: 7px;
   color: #565148;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 650;
 }
 
 .auth-modal .register-fields label {
   gap: 7px;
   color: #565148;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 650;
 }
 
@@ -282,7 +282,7 @@
   background: #fff;
   border: 1px solid #ded5ca;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 15px;
   transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
 }
 
@@ -292,7 +292,7 @@
   background: #fff;
   border: 1px solid #ded5ca;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 15px;
   transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
 }
 
@@ -334,7 +334,7 @@
   border: 0;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .auth-submit-button span {
@@ -354,7 +354,7 @@
   padding-top: 15px;
   color: var(--muted);
   border-top: 1px solid var(--line);
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.55;
 }
 
@@ -392,14 +392,14 @@
 @media (max-width: 700px) {
 
   .auth-brand-lockup small {
-    font-size: 8px;
+    font-size: 13px;
   }
 }
 
 @media (max-width: 700px) {
 
   .auth-art-index {
-    font-size: 8px;
+    font-size: 13px;
   }
 }
 
@@ -472,7 +472,7 @@
   border: 1px solid var(--line);
   border-radius: 3px;
   font: inherit;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .auth-form input {
@@ -484,7 +484,7 @@
   border: 1px solid var(--line);
   border-radius: 3px;
   font: inherit;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .register-lookup-note {
@@ -712,7 +712,7 @@
 .auth-modal-description {
   max-width: 400px;
   margin: 12px 0 22px;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .auth-modal-tabs {
@@ -770,7 +770,7 @@
 .auth-modal .register-fields > [role="status"] {
   grid-column: 1 / -1;
   margin: 0;
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
@@ -801,7 +801,7 @@
   background: #fff0ed;
   border: 1px solid #e8c5bf;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
@@ -893,7 +893,7 @@
 @media (max-width: 700px) {
 
   .auth-brand-lockup small {
-    font-size: 7px;
+    font-size: 13px;
   }
 }
 
@@ -908,7 +908,7 @@
 
   .auth-art-index {
     align-self: flex-end;
-    font-size: 7px;
+    font-size: 13px;
   }
 }
 
@@ -943,7 +943,7 @@
 
   .auth-modal-description {
     margin: 10px 0 19px;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.6;
   }
 }
@@ -1091,7 +1091,7 @@
 
 .recovery-step {
   color: #827b70;
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 750;
   letter-spacing: 0.12em;
 }
@@ -1134,14 +1134,14 @@
 .auth-modal .auth-form .recovery-code-input {
   text-align: center;
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.45em;
   font-variant-numeric: tabular-nums;
 }
 
 .auth-modal .auth-form > label > small {
   color: #777168;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 450;
 }
 
@@ -1154,7 +1154,7 @@
   background: #f7f5f1;
   border: 1px solid #ebe5dc;
   border-radius: 5px;
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.4;
 }
 
@@ -1193,7 +1193,7 @@
 
 .recovery-delivery-note p {
   margin: 0;
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.55;
 }
 
@@ -1204,7 +1204,7 @@
   background: #eef4ef;
   border: 1px solid #d7e4d9;
   border-radius: 5px;
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.55;
 }
 
@@ -1218,7 +1218,7 @@
 .auth-modal .auth-recovery-back {
   min-height: 32px;
   color: #686156;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .auth-modal .auth-recovery-back:hover {

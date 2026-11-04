@@ -26,7 +26,7 @@ function readReview(value: unknown): PublicProductReview {
     || !Array.isArray(value.imagenes)
     || (value.comentario !== null && typeof value.comentario !== 'string')
     || Number.isNaN(Date.parse(value.creadoEn))) {
-    throw new Error('La API devolvió una reseña con un formato inesperado.')
+    throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   }
   return {
     id: value.id,
@@ -50,7 +50,7 @@ function readReviewPage(value: unknown): { content: PublicProductReview[]; total
     || typeof value.totalPages !== 'number'
     || !Number.isInteger(value.totalPages)
     || value.totalPages < 0) {
-    throw new Error('La API devolvió una página de reseñas con un formato inesperado.')
+    throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   }
   return { content: value.content.map(readReview), totalPages: value.totalPages }
 }

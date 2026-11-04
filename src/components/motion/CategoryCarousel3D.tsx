@@ -136,7 +136,7 @@ export function CategoryCarousel3D({ categories, counts }: Props) {
                 <span className="cc3-count">{count} {count === 1 ? 'pieza' : 'piezas'}</span>
                 <strong>{category.name}</strong>
                 <span className="cc3-note">{category.note}</span>
-                <span className="cc3-go">Ver categoría <span aria-hidden="true">→</span></span>
+                <span className="cc3-go">Ver categoría</span>
               </span>
             </Link>
           )

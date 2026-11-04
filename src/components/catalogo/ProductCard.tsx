@@ -10,7 +10,7 @@ import { productDeal } from './pricing'
 
 export function ProductGrid({ products }: { products: StoreProduct[] }) {
   if (!products.length) {
-    return <div className="empty-results"><h3>No encontramos piezas</h3><p>Prueba con otro nombre o explora todas las categorías.</p><Link className="text-link" to="/productos">Ver todos los productos <span aria-hidden="true">→</span></Link></div>
+    return <div className="empty-results"><h3>No encontramos piezas</h3><p>Prueba con otro nombre o explora todas las categorías.</p><Link className="text-link" to="/productos">Ver todos los productos</Link></div>
   }
   return <div className="product-grid">{products.map((product, index) => <ProductCard key={product.id} product={product} index={index} />)}</div>
 }

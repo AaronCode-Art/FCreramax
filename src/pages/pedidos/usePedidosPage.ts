@@ -10,6 +10,7 @@ export function usePedidosPage(downloadOrderPdf: OrderDownloader) {
   const [selected, setSelected] = useState<StoreOrder | null>(null)
   const [selectedLoading, setSelectedLoading] = useState(false)
   const [error, setError] = useState('')
+  const [refreshing, setRefreshing] = useState(false)
   const selectionRequest = useRef(0)
   const pageSize = 8
   const filtered = orders.filter((order) => {
@@ -68,6 +69,19 @@ export function usePedidosPage(downloadOrderPdf: OrderDownloader) {
     }
   }
 
+  async function refreshNow() {
+    setRefreshing(true)
+    try {
+      await refreshOrders(true)
+      setError('')
+    } catch (cause) {
+      console.error('No se pudo actualizar el estado de los pedidos.', cause)
+      setError('No pudimos actualizar tus pedidos. Revisa tu conexión e inténtalo otra vez.')
+    } finally {
+      setRefreshing(false)
+    }
+  }
+
   return {
     closeSelected,
     customer,
@@ -82,7 +96,9 @@ export function usePedidosPage(downloadOrderPdf: OrderDownloader) {
     page,
     pages,
     query,
+    refreshNow,
     refreshOrders: retryOrders,
+    refreshing,
     selected,
     selectedLoading,
     setPage,

@@ -82,29 +82,29 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
 }
 
-function requiredString(value: unknown, field: string): string {
-  if (typeof value !== 'string' || !value) throw new Error(`La API devolvió un pedido sin ${field}.`)
+function requiredString(value: unknown, _field?: string): string {
+  if (typeof value !== 'string' || !value) throw new Error(`No se cargaron los datos. Inténtalo de nuevo.`)
   return value
 }
 
 function nullableString(value: unknown): string | null {
   if (value === null || value === undefined) return null
-  if (typeof value !== 'string') throw new Error('La API devolvió un dato de pedido no válido.')
+  if (typeof value !== 'string') throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   return value
 }
 
-function requiredNumber(value: unknown, field: string): number {
-  if (typeof value !== 'number' || !Number.isFinite(value)) throw new Error(`La API devolvió un pedido sin ${field} válido.`)
+function requiredNumber(value: unknown, _field?: string): number {
+  if (typeof value !== 'number' || !Number.isFinite(value)) throw new Error(`No se cargaron los datos. Inténtalo de nuevo.`)
   return value
 }
 
 function readSummary(value: unknown): CustomerOrderSummary {
-  if (!isRecord(value)) throw new Error('La API devolvió un pedido no válido.')
+  if (!isRecord(value)) throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   const createdAt = requiredString(value.createdAt, 'fecha')
-  if (Number.isNaN(Date.parse(createdAt))) throw new Error('La API devolvió una fecha de pedido no válida.')
+  if (Number.isNaN(Date.parse(createdAt))) throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   let datosEntrega: CustomerOrderSummary['datosEntrega'] = null
   if (value.datosEntrega !== null && value.datosEntrega !== undefined) {
-    if (!isRecord(value.datosEntrega)) throw new Error('La API devolvió datos de entrega no válidos.')
+    if (!isRecord(value.datosEntrega)) throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
     datosEntrega = {
       destinatario: nullableString(value.datosEntrega.destinatario),
       telefono: nullableString(value.datosEntrega.telefono),
@@ -136,11 +136,11 @@ function readSummary(value: unknown): CustomerOrderSummary {
 
 function readDetail(value: unknown): CustomerOrderDetail {
   if (!isRecord(value) || !Array.isArray(value.detalles) || !Array.isArray(value.pagos)) {
-    throw new Error('La API devolvió el detalle del pedido incompleto.')
+    throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   }
   const summary = readSummary(value)
   const detalles = value.detalles.map((line): CustomerOrderDetail['detalles'][number] => {
-    if (!isRecord(line)) throw new Error('La API devolvió una línea de pedido no válida.')
+    if (!isRecord(line)) throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
     return {
       id: requiredString(line.id, 'identificador de producto'),
       productoId: nullableString(line.productoId),
@@ -153,7 +153,7 @@ function readDetail(value: unknown): CustomerOrderDetail {
     }
   })
   const pagos = value.pagos.map((payment): CustomerOrderDetail['pagos'][number] => {
-    if (!isRecord(payment)) throw new Error('La API devolvió un pago no válido.')
+    if (!isRecord(payment)) throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
     return {
       metodoPago: requiredString(payment.metodoPago, 'método de pago'),
       estado: requiredString(payment.estado, 'estado de pago'),
@@ -182,7 +182,7 @@ export async function quoteCustomerCheckout(
     method: 'POST',
     body: JSON.stringify({ tipoEntrega, codigoCupon }),
   }, token)
-  if (!isRecord(response)) throw new Error('La API devolvió una cotización no válida.')
+  if (!isRecord(response)) throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
   return {
     subtotal: requiredNumber(response.subtotal, 'subtotal'),
     descuentoCupon: requiredNumber(response.descuentoCupon, 'descuento de cupón'),
@@ -211,7 +211,7 @@ export async function fetchCustomerOrders(token: string): Promise<CustomerOrderS
   while (page < totalPages) {
     const response = await apiRequest(`/api/v1/pedidos/mios?pagina=${page}&tamano=100`, {}, token)
     if (!isRecord(response) || !Array.isArray(response.contenido) || typeof response.totalPaginas !== 'number') {
-      throw new Error('La API devolvió un historial de pedidos no válido.')
+      throw new Error('No se cargaron los datos. Inténtalo de nuevo.')
     }
     orders.push(...response.contenido.map(readSummary))
     totalPages = response.totalPaginas
